@@ -1,2 +1,2 @@
 path_prefix: public/galleries
-processor: mini_magick
+processor: rmagick
