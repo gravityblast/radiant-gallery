@@ -1,0 +1,36 @@
+<%
+count = gallery.children.count
+children = count > 0
+level = gallery.ancestors.size
+padding_left = (level * 22) + 4
+children_class = children ? ' children-visible' : ' no-children'
+expanded = false
+expander = children ? image((expanded ? "collapse" : "expand"), :class => "expander", :alt => 'toggle children', :title => '', :align => 'center', :id => "gallery-expander-#{gallery.id}") : ""
+name = %{<span class="name">#{ gallery.name }</span>}
+icon = image('gallery/gallery', :class => "icon", :alt => 'gallery-icon', :title => '', :align => 'center')
+spinner = image('spinner.gif', :class => 'busy', :id => "gallery-busy-#{gallery.id}", :alt => "", :title => "", :align => "center", :style => 'display: none;')
+-%>
+
+
+<tr id="gallery-row-<%= gallery.id %>" class="node level-<%= level %><%= children_class %>">
+	<td class="gallery"  style="padding-left: <%= padding_left %>px">
+  	<span class="w1">
+			<%= expander %> 
+			<a title="<%= gallery.name %>" href="<%= gallery_show_url(:id => gallery) %>">
+				<%= icon %>
+				<span class="name"><%= gallery.name %></span>
+			</a> 
+			<small class="info">(<%= gallery.items.size %> files)</small>
+			<%= spinner %>
+		</span>
+	</td>	
+	<td class="status"><%= gallery.id %></td>
+	<td class="status published-status"><%= gallery.hidden ? 'hidden' : 'visible' %></td>
+	<td class="add-child"><%= link_to image('add-child', :alt => 'add child'), gallery_new_child_url(:parent_id => gallery) %></td>
+  <td class="remove"><%= link_to image_tag('admin/remove', :alt => 'remove gallery'), gallery_remove_url(:id => gallery) %></td>
+</tr>
+
+            
+
+
+

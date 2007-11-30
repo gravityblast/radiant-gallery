@@ -1,0 +1,5 @@
+if @destroyed
+  page.call "GalleryItems.remove", @item.id
+else
+  page.alert "Problem destroying this item"
+end

@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+  <title><r:title /></title>	
+  <style type="text/css" media="screen">
+  body {
+    background: #F5F5F3;
+    color: #6E6E6E;
+    font-family: 'Lucida Grande',Geneva,Arial,Verdana,sans-serif;
+    font-size: 12px;
+    text-align: center;
+  }
+  
+  a:link, a:hover, a:visited {
+    color: #06C;
+    text-decoration: none;
+  }
+  
+  a:hover {
+    background: #06C;
+    color: #FFF;
+  }  
+   
+  #container {
+    background: #FFF;
+    width: 528px;
+    margin: 0 auto;
+    text-align: left;    
+    padding: 10px;
+  }
+  
+  #footer { 
+    text-align: center;
+  }
+  
+  div.clearer{ clear:both; }
+  
+  /* All pages */
+  
+  #header h1 {
+    margin: 0;
+  }
+  
+  #header div.breadcrumb {	
+  	margin: 10px 0;
+  }        
+  
+  /* Galleries list */
+  #container div.galleries div.gallery {
+  	border: 1px solid #E7F0F5;
+  	padding: 10px;
+  	margin-bottom: 10px;
+  }
+
+  #content div.galleries div.gallery div.thumb {
+  	width: 80px;
+  	height: 80px;
+  	position: relative;
+  	float: left;
+  	background-color: transparent;
+  	background-repeat: no-repeat;
+  	background-position: center;
+  }
+
+  #content div.galleries div.gallery div.thumb a:link, #content div.galleries div.gallery div.thumb a:visited, #content div.galleries div.gallery div.thumb a:hover {
+    text-indent: -9999px;
+    background-color: transparent;
+    display: block;
+    height: 100px;
+    -moz-outline: none;
+  }
+
+  #content div.galleries div.gallery div.description {
+  	width: 400px;
+  	float: right;
+  }
+
+  #content div.galleries div.gallery div.description h2{
+  	margin: 0;
+  	font-size: 14px;
+  }
+  
+  /* Items list */
+  #content div.gallery div.container {
+  	float: left;
+  	width: 120px;
+  	height: 120px;
+  	margin: 0 10px 10px 0;
+  	border: 1px solid #E7F0F5;
+  	position: relative;
+  }
+
+  #content div.gallery div.container div.thumb {
+  	background-repeat: no-repeat;
+  	background-position: center;
+  	background-color: #FFF;
+  	width: 100px;      
+  	height: 100px;
+  	position: absolute;
+  	top: 50%;
+  	left: 50%;
+  	margin-top: -50px;
+  	margin-left: -50px;		
+  	text-indent: -9999px;
+  }
+
+  #content div.gallery div.container div.thumb a {
+    background: transparent;
+    display: block;
+    height: 100%;	
+    -moz-outline: none;
+  }
+  
+  /* item page */
+
+  #content div.item h2 {
+  	font-size: 20px;
+  	margin-top: 0;
+  	text-align: center;
+  }
+
+  #content div.item div.navigation {
+  	border-bottom: 1px solid #E7F0F5;
+  	padding-bottom: 10px;
+  	margin-bottom: 10px;
+  }
+
+  #content div.item div.navigation div.prev {
+  	float: left;
+  	text-align: right;
+  }
+
+  #content div.item div.navigation div.next {
+  	float: right;
+  	text-align: left;
+  }
+
+  #content div.item div.navigation div.prev, #content div.item div.navigation div.next {
+  	font-size: 20px;
+  	width: 49%;
+  }
+
+  #content div.item div.navigation div.prev a, #content div.item div.navigation div.next a  {
+  	display: block;
+  	padding: 0 10px;
+  }
+
+  #content div.item div.image {
+    text-align: center;
+  }
+
+  #content div.item div.image a img{
+  	border: none;
+  }
+  
+  </style>
+</head>
+<body>
+  <div id="container">
+    <div id="header">
+      <h1><r:link /></h1>
+      <!-- breadcrumb -->
+      <div class="breadcrumb">
+        <r:gallery:if_index>
+          <r:title />
+        </r:gallery:if_index>
+        <r:gallery:unless_index>
+          <a href="<r:url />" title="Root" ><r:title /></a> &gt;
+          <r:gallery:breadcrumbs />
+        </r:gallery:unless_index>
+      </div>      
+      <!-- end breadcrumb -->
+    </div>
+    <div id="content">
+      <!-- galleries -->
+      <r:gallery:if_galleries>
+        <div class="galleries">
+          <r:galleries:each level="current">
+            <div class="gallery">    
+              <r:gallery:if_items>
+                <div class="thumb" style="background-image: url('<r:gallery:item:thumb width="120" position="first" />');">
+                  <a href="<r:gallery:gallery_url />" title="<r:gallery:name />">
+                    <r:gallery:name />
+                  </a>                
+                </div>
+              </r:gallery:if_items>
+              <div class="description">
+                <h2><r:gallery:link /></h2>
+                <p><r:gallery:description /></p>
+              </div>
+              <div class="clearer"></div>
+            </div>
+          </r:galleries:each>
+        </div>
+      </r:gallery:if_galleries>
+      <!-- end galleries -->
+      <r:gallery:unless_galleries>
+        <!-- items -->
+        <r:gallery:item:unless_current>
+          <r:gallery:if_items>
+            <div class="gallery">            
+              <p><r:gallery:description /></p>
+              <r:gallery:items:each>
+                <!-- item -->
+                <div class="container">
+                  <div class="thumb" style="background-image: url('<r:gallery:item:thumb width="150" />')">
+                    <a href="<r:gallery:item:page_url />">
+                      <r:gallery:item:name />
+                     </a>
+                  </div>
+                </div>
+                <!-- end item -->
+              </r:gallery:items:each>
+              <div class="clearer"></div>
+            </div>
+          </r:gallery:if_items>
+        </r:gallery:item:unless_current>
+        <!-- end items -->
+        <!-- item page -->
+        <r:gallery:item:if_current>
+          <r:gallery:item:current>
+            <div class="item">  
+              <div class="navigation">
+                <div class="prev">
+                  <r:gallery:item:if_prev>      
+                    <a href="<r:gallery:item:prev_page_url />">&laquo; prev</a>      
+                  </r:gallery:item:if_prev>
+                </div>
+                <div class="next">
+                  <r:gallery:item:if_next>      
+                    <a href="<r:gallery:item:next_page_url />">next &raquo;</a>      
+                  </r:gallery:item:if_next>
+                </div>
+                <div class="clearer"></div>
+              </div>
+              <div class="clearer"></div>
+              <h2><r:gallery:item:name /></h2>  
+              <div class="image">
+                <a href="<r:gallery:item:path />">
+                  <img src="<r:gallery:item:thumb width="450" />" alt="<r:gallery:item:name />" />
+                </a>
+              </div>
+              <p>
+                <r:gallery:item:description />
+              </p>
+            </div>
+          </r:gallery:item:current>
+        </r:gallery:item:if_current>
+        <!-- end item page -->        
+      </r:gallery:unless_galleries>
+    </div>
+    <div class="clearer"></div>
+    <div id="footer">
+      <p>Copyright &copy; <r:date format="%Y" />, [your name]. All rights reserved.<br />
+      This gallery is powered by <a href="http://radiantcms.org/">Radiant CMS</a> and <a href="http://gor.bigchieflabs.com/" title="Gallery on Radiant">GoR</a>.</p>
+    </div>
+  </div>
+</body>
+</html>

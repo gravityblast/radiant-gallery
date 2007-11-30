@@ -1,0 +1,44 @@
+<% include_stylesheet 'admin/gallery/gallery' -%>
+
+<script type="text/javascript" charset="utf-8">
+	function toggle_advanced() {
+		['advanced_options', 'open_advanced_options', 'close_advanced_options'].each(function(id) {
+			Element.toggle(id);
+		});
+	}
+</script>
+
+<h1 id="new_page"><%= @gallery.new_record? ? "New Gallery" : "Edit Gallery" %></h1>
+
+<form method="post">
+  <div class="form-area">
+    <p class="title">
+      <label for="gallery_name">Gallery name</label>
+      <%= text_field "gallery", "name", :class => 'textbox', :maxlength => 255 %>
+    </p>
+		<p class="description">
+      <label for="gallery_description">Gallery description</label>
+    </p>
+		<div>
+			<%= text_area "gallery", "description", :class => 'textbox', :maxlength => 255 %>
+		</div>
+    <p id="advanced_options" style="display: none;">
+			<%= check_box :gallery, :hidden, {:id => 'hide_gallery'} %>
+			<label for="hide_gallery"> Hide this gallery in galleries list. </label>
+		</p>
+		<p>
+			<small id="close_advanced_options" style="display: none;"><a href="#" onclick="toggle_advanced(); return false;">Close advanced options</a></small>
+			<small id="open_advanced_options"><a href="#" onclick="toggle_advanced(); return false;">Advanced options</a></small>
+		</p>
+    <span class="clear">&nbsp;</span>
+  </div>
+  <p class="buttons">
+    <%= save_model_button(@gallery) %> <%= save_model_and_continue_editing_button(@gallery) %> or <%= link_to "Cancel", gallery_index_url %>
+  </p>
+</form>
+
+<script type="text/javascript">
+	// <![CDATA[
+	  Field.activate('gallery_name');
+  // ]]>
+</script>

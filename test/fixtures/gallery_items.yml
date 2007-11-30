@@ -1,0 +1,68 @@
+blue_rose:
+  id: 1
+  filename: the_blue_rose.jpg
+  content_type: image/jpeg
+  description: This is a blue rose!
+  gallery_id: 2
+  position: 0
+  name: The Blue Rose
+  extension: jpg
+red_rose:
+  id: 2
+  filename: the_red_rose.jpg
+  content_type: image/jpeg
+  description: This is a red rose!
+  gallery_id: 2
+  position: 1
+  name: The Red Rose
+  extension: jpg
+yellow_rose:
+  id: 3
+  filename: the_yellow_rose.jpg
+  content_type: image/jpeg
+  description: This is a yellow rose!
+  gallery_id: 2
+  position: 2
+  name: The Yellow Rose
+  extension: jpg
+big_daisy:
+  id: 4
+  filename: the_big_daisy.jpg
+  content_type: image/jpeg
+  description: This is a big daisy!
+  gallery_id: 3
+  position: 0
+  name: The Big Daisy
+  extension: jpg
+medium_daisy:
+  id: 5
+  filename: the_medium_daisy.jpg
+  content_type: image/jpeg
+  description: This is a medium daisy!
+  gallery_id: 3
+  position: 1
+  name: The Medium Daisy
+  extension: jpg
+small_daisy:
+  id: 6
+  filename: the_small_daisy.jpg
+  content_type: image/jpeg
+  description: This is a small daisy!
+  gallery_id: 3
+  position: 2
+  name: The Small Daisy
+  extension: jpg
+daisy_pdf:
+  id: 7
+  filename: the_daisy_pdf.pdf
+  content_type: application/pdf
+  description: This is a pdf!
+  gallery_id: 3
+  position: 3
+  name: The Daisy Pdf
+  extension: pdf
+  
+    
+  
+  
+    

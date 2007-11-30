@@ -1,0 +1,6 @@
+<%= render :partial => 'gallery', :collection => @gallery.children %>
+<script type="text/javascript" charset="utf-8">
+	<% @gallery.children.each do |gallery| %>
+	gallery_tree.createItem(<%= gallery.id %>, <%= @gallery.id %>);
+	<% end -%>
+</script>

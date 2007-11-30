@@ -1,0 +1,42 @@
+<% include_stylesheet 'admin/gallery/gallery' -%>
+<% include_stylesheet 'admin/gallery/cropper' -%>
+<% include_javascript 'builder' -%>
+<% include_javascript 'cropper' -%>
+
+<script type="text/javascript" charset="utf-8">
+	function onEndCrop( coords, dimensions ) {
+ 		$( 'crop_x1' ).value = coords.x1;
+  	$( 'crop_y1' ).value = coords.y1;
+	  $( 'crop_x2' ).value = coords.x2;
+		$( 'crop_y2' ).value = coords.y2;
+		$( 'crop_width' ).value = dimensions.width;	
+		$( 'crop_height' ).value = dimensions.height;
+  }
+	
+	Event.observe(window, 'load', function() {
+		new Cropper.Img( 'image', { onEndCrop: onEndCrop } );
+	});
+</script>
+
+
+<h1 id="remove_article">Edit image (beta)</h1>
+<% if @item.image? -%>	
+<form method="post">
+	<input type="hidden" name="crop_x1" id="crop_x1">
+	<input type="hidden" name="crop_y1" id="crop_y1">
+ 	<input type="hidden" name="crop_x2" id="crop_x2">
+	<input type="hidden" name="crop_y2" id="crop_y2">
+	<input type="hidden" name="crop_width" id="crop_width">
+	<input type="hidden" name="crop_height" id="crop_height">
+  <p class="buttons">
+	<input type="submit" name="edit_action" value="crop" />
+	 or <%= link_to 'Cancel', gallery_show_url(:id => @item.gallery) %>
+</p>
+</form>
+<% else %>
+<p>You can not crop this item because it's not an image.</p>
+<% end -%>
+<div class="crop">
+	<h2><%= @item.name %></h2>
+	<img id="image" src="<%= @item.public_filename %>" alt="<%= @item.name %>"/>
+</div>

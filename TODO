@@ -1,0 +1,8 @@
+* pagination for gallery:items:each
+* retrieve file doesn't work
+* add created_by, updated_by
+* Create a flickr gallery.
+* Add image for each type of Content-type
+* Add credits/licenses for js libraries
+* Why when I reorder images, the first one has position=0 instead of 1?. In this way, gallery_item.first? doesn't work!
+* If I am inside a gallery tag, I can't use <r:link /> to retrieve page url.

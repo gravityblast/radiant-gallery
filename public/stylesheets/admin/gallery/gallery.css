@@ -1,0 +1,225 @@
+div.gallery#list {
+  margin-top: 10px;	
+	font-size: 14px;
+}
+
+div.gallery#list div.item{
+  float: left;
+	margin: 5px 5px 5px 0;
+	border: 1px solid #EAEAEA;
+	text-align: center;
+	width: 8em;
+	height: 10em; 
+}
+
+
+div.gallery#list div.item div.image {  	
+	cursor: move;	
+	width: 7em;
+	height: 7em;
+	margin: 0.5em auto;
+}
+
+div.gallery#list div.item div.image img {
+}
+
+div.gallery#list div.item div.label{    
+  width: 8em;
+	margin: 0 auto;
+  overflow: hidden;
+  font-size: 0.9em;
+	cursor: pointer;
+	height: 1.2em;	
+}
+
+div.gallery#list div.item div.buttons {
+	font-size: 100%;
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	margin: 0;
+	height: 1em;	 
+}
+
+div.gallery#list div.item div.buttons a img{	
+	font-size: 100%;
+	cursor: pointer;
+	height: 1em;
+}
+
+div.gallery#list div.item div.buttons a:hover img{	
+	height: 1.2em;
+}     
+
+/* Galleries list page */
+
+#content table.index .node .gallery {
+  font-size: 120%;
+	font-weight: bold;
+}
+
+#content table.index .node .gallery a {
+  text-decoration: none;
+}
+
+#content table.index .node .gallery a .name, #content table.index .node .gallery a:visited .name,
+#content table.index .node .gallery a .description, #content table.index .node .gallery a:visited .description
+{
+  color: black;
+  text-decoration: none;
+}
+
+
+#content table.index .node .gallery a:hover .name, #content table.index .node .gallery a:visited:hover .name,
+#content table.index .node .gallery a:hover .description, #content table.index .node .gallery a:visited:hover .description
+{
+  color: blue;
+  text-decoration: underline;
+}                  
+
+#content table.index .node .gallery small.info {
+	color: #9EB3BF;
+	font-style: italic;
+	font-weight: normal;
+}
+
+/* gallery show page (list of files) */
+
+#content div.toolbar {
+	float: left;
+}
+
+#content div.toolbar a, #content div.toolbar a:visited {
+	font-size: 90%;
+	color: black;
+	text-decoration: underline;
+	font-weight: bold;
+}
+
+#content div.toolbar a:hover {
+	color: blue;
+}
+
+div#slider {
+	position: relative;
+	width: 234px;
+	float: right;
+	margin-top: 5px;
+	height: 16px;
+	background: transparent url('images/pictures_zoom_small.png') no-repeat left center;
+} 
+
+div#slider div.wrapper {
+	padding-right: 20px;
+	height: 16px;
+	background: transparent url('images/pictures_zoom_big.png') no-repeat right center;
+}
+
+div#slider div#track {	
+	position: absolute;
+	left: 15px;
+	bottom: 4px;
+	width: 200px;
+	height: 8px;
+	background: #F5F1E2;
+}
+
+div#slider div#track div#handle {
+	width: 5px;
+	height: 8px;
+	background: #CC0000;
+}
+
+#content .form-area #gallery_description.textbox {
+	width: 100%;
+	height: 200px;
+	font-size: 200%;
+}
+
+#content div.toolbar {
+  margin-bottom: 10px;
+}
+
+#content .form-area #by-upload h4, #content .form-area #by-url h4 {
+  margin: 0 0 5px 0;
+}
+
+.upload-or-url {
+  margin: 5px 0;  
+}
+
+
+/* popups */
+
+#popups .popup {
+  background-color: white;
+  border: 5px solid silver;
+  padding: 2em;
+  padding-top: 1em;
+  padding-bottom: .5em;
+	width: 500px;
+}
+#popups .popup .busy {
+  float: right;
+}
+#popups .popup h3 {
+  margin-top: 0;
+}
+#popups .popup .close-link {
+  font-size: 85%;
+}
+
+#popups .popup #update-item-popup-name-field, #popups .popup #update-item-popup-description-field {
+	width: 100%;	
+	font-size: 120%;
+}
+
+#popups .popup #update-item-popup-description-field {
+	height: 150px;
+}
+
+
+/* crop */
+
+div.crop {
+	text-align: center;
+}
+	
+div.crop div.imgCrop_wrap{   
+	margin: 0 auto;
+} 
+
+div.crop {
+	position: relative;
+}
+
+div.crop img.busy{
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-top: -8px;
+	margin-left: -8px;
+	z-index: 9999;
+}
+
+
+/* importing */
+
+ul.importing {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	font-size: 100%;
+}
+
+ul.importing li{
+	line-height: 18px;
+}
+
+ul.importing li.even{
+	background: #E8E8FF;
+}
+
+ul.importing li.odd{
+	background: #FFF;
+}
