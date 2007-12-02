@@ -250,7 +250,11 @@ var GalleryItems = {
 	remove: function(id) {
     var e = $('item_' + id);
 		if(e) {
-	    Effect.Puff(e);
+	    Effect.Puff(e, {
+				afterFinish: function() {
+					e.remove();
+				}
+			});			
 		}    
   },
 
