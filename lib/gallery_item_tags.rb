@@ -159,7 +159,7 @@ module GalleryItemTags
   tag "gallery:item:next_page_url" do |tag|
     item = find_item(tag)    
     unless item.last?
-      next_item = item.lower_item      
+      next_item = GalleryItem.find(:first, :conditions => ["gallery_id = ? AND position = ? AND parent_id IS NULL", item.gallery.id, item.position + 1, ]) #item.lower_item      
       File.join(tag.render('url'), @current_gallery.url, "#{next_item.id}.#{next_item.extension}/show")
     end
   end
@@ -171,7 +171,7 @@ module GalleryItemTags
   tag "gallery:item:prev_page_url" do |tag|
     item = find_item(tag)
     unless item.position == 0
-      prev_item = item.higher_item
+      prev_item = GalleryItem.find(:first, :conditions => ["gallery_id = ? AND position = ? AND parent_id IS NULL", item.gallery.id, item.position - 1, ]) #item.higher_item
       File.join(tag.render('url'), @current_gallery.url, "#{prev_item.id}.#{prev_item.extension}/show")
     end
   end
