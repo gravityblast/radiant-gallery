@@ -64,6 +64,10 @@ module GalleryHelper
       width_perc, height_perc = proportional_resize(thumb.width, thumb.height, 100, 100)    
       margin_top = (100 - height_perc) / 2
       content << "<img style=\"margin-top: #{margin_top}%\" src=\"#{thumb.public_filename}\" width=\"#{width_perc}%\" height=\"#{height_perc}%\" />"
+    else
+      width_perc, height_perc = proportional_resize(100, 100, 100, 100)
+      margin_top = (100 - height_perc) / 2
+      content << "<img style=\"margin-top: #{margin_top}%\" src=\"/images/admin/gallery/file.png\" width=\"#{width_perc}%\" height=\"#{height_perc}%\" />"
     end
     content << "</div>"
   end

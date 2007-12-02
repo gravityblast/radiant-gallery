@@ -363,3 +363,52 @@ var GalleryItemPopup = {
 	}
 		
 };
+
+
+var GalleryZoomSlider = Class.create({
+	
+	initialize: function(handle, track) {
+		this.handle = handle;
+		this.track = track;
+		this.setup();
+		this.readZoomCookie();
+	},
+	
+	setup: function() {
+		this.slider = new Control.Slider(this.handle, this.track, {
+	    onChange: this.onChange.bind(this),
+	    onSlide: 	this.onSlide.bind(this)
+	  });
+	},
+	
+	onChange: function(value) {		
+		this.value = value;
+		this.saveZoomCookie();
+		this.zoom();
+	},
+	
+	onSlide: function(value) {
+		this.value = value;
+		this.zoom();
+	},
+	
+	zoom: function(perc) {
+	  Element.setContentZoom('list', 200 * this.value + 100);
+	},
+	
+	readZoomCookie: function() {
+    var matches = document.cookie.match(/gallery_zoom=(.+?);/);
+    this.value = matches ? matches[1] : 0;
+		this.slider.setValue(this.value);
+  },
+
+	saveZoomCookie: function() {
+		document.cookie = "gallery_zoom=" + this.value + "; path=/admin";
+	}	
+	
+});
+
+document.observe('dom:loaded', function() {
+	new GalleryZoomSlider('handle', 'track');
+	GallerySortableList.create('list', '/admin/gallery_item/sort')
+});

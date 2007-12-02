@@ -113,7 +113,7 @@ class GalleryController < ApplicationController
           :gallery_id => @gallery.id,
           :temp_path => tmp_file,
           :filename => File.basename(path),
-          :content_type => "image/jpeg"
+          :content_type => GalleryItem::KnownExtensions[File.extname(path).gsub(/^\./, '')][:content_type]
         }
         FileUtils.rm(path)
         item.save

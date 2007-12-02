@@ -1,0 +1,93 @@
+# image
+image/gif:
+  extensions:
+  - gif
+image/jpeg:
+  extensions:
+  - jpeg
+  - jpg
+  - jpe
+image/png:
+  extensions:
+    - png
+image/tiff:
+  extensions:
+  - tiff
+  - tif 
+image/x-bmp:
+  extensions:
+  - bmp
+image/bmp:
+  extensions:
+  - bmp
+image/targa:
+  extensions:
+  - tga
+# video
+video/3gpp:
+  extensions:
+  - 3gp
+  - 3gpp
+video/mpeg:
+  extensions:
+  - mp2
+  - mpe
+  - mp3g
+  - mpg
+video/quicktime:
+  extensions:
+  - qt
+  - mov
+video/vnd.objectvideo:
+  extensions:
+  - mp4
+video/vnd.sealed.swf:
+  extensions:
+  - sswf
+  - ssw 
+video/x-msvideo:
+  extensions:
+  - avi
+video/x-sgi-movie:
+  extensions:
+  - movie
+# audio
+audio/mpeg:
+  extensions:
+  - mpga
+  - mp2
+  - mp3 
+audio/x-aiff:
+  extensions:
+  - aif
+  - aifc
+  - aiff
+audio/x-midi:
+  extensions:
+  - mid
+  - midi
+  - kar
+audio/x-pn-realaudio:
+  extensions:
+  - rm
+  - ram
+audio/x-wav:
+  extensions:
+  - wav
+# application
+application/pdf:
+  extensions:
+  - pdf
+application/x-gtar:
+  extensions:
+  - gtar
+  - tgz
+  - tbz2
+  - tbz
+application/x-gzip:
+  extensions:
+  - gz
+application/zip:
+  icon: zip
+  extensions:
+  - zip

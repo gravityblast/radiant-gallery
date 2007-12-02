@@ -33,7 +33,7 @@ class GalleryExtension < Radiant::Extension
     end
   end
   
-  def activate
+  def activate    
     GalleryPage
     GalleryCachedPage
     admin.tabs.add "Galleries", "/admin/gallery", :after => "Layouts", :visibility => [:all]
@@ -50,9 +50,9 @@ class GalleryExtension < Radiant::Extension
     
     ActiveRecord::Base.send(:extend, Technoweenie::AttachmentFu::ActMethods)
     Technoweenie::AttachmentFu.tempfile_path = ATTACHMENT_FU_TEMPFILE_PATH if Object.const_defined?(:ATTACHMENT_FU_TEMPFILE_PATH)
-    FileUtils.mkdir_p Technoweenie::AttachmentFu.tempfile_path
-    
+    FileUtils.mkdir_p Technoweenie::AttachmentFu.tempfile_path        
     load_gallery_configuration
+    load_content_types
   end
   
   def deactivate
@@ -68,4 +68,17 @@ class GalleryExtension < Radiant::Extension
     end
   end
   
+  def load_content_types
+   filename = File.join(GalleryExtension.root, 'config', 'content_types.yml')
+    content_types = YAML::load_file(filename)
+    content_types.each do |name, attributes|
+      attributes["extensions"].each do |extension|
+        GalleryItem::KnownExtensions[extension] = {
+          :content_type => name,
+          :icon => attributes["icon"]
+        }
+      end
+    end    
+  end
+    
 end

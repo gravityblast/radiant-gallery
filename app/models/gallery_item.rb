@@ -1,4 +1,16 @@
-class GalleryItem < ActiveRecord::Base
+class GalleryItem < ActiveRecord::Base  
+  
+  class KnownExtensions
+    @@extensions = {}
+    class << self
+      def []=(extension, content_type)
+        @@extensions[extension.downcase] = content_type
+      end
+      def [](extension)
+        @@extensions[extension.downcase] || 'Unknown'
+      end
+    end
+  end
   
   has_attachment :storage => :file_system,
     :path_prefix => Radiant::Config["gallery.path_prefix"],
@@ -14,7 +26,7 @@ class GalleryItem < ActiveRecord::Base
   before_create :set_position
   before_create :set_extension
   before_create :set_gallery_id_if_is_a_thumbnails    
-  
+   
   def jpeg?
     not (self.content_type =~ /jpeg/).nil?
   end
