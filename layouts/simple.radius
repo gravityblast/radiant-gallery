@@ -254,7 +254,7 @@
     <div class="clearer"></div>
     <div id="footer">
       <p>Copyright &copy; <r:date format="%Y" />, [your name]. All rights reserved.<br />
-      This gallery is powered by <a href="http://radiantcms.org/">Radiant CMS</a> and <a href="http://gor.bigchieflabs.com/" title="Gallery on Radiant">GoR</a>.</p>
+      This gallery is powered by <a href="http://radiantcms.org/">Radiant CMS</a>.</p>
     </div>
   </div>
 </body>

@@ -50,7 +50,7 @@ class GalleryItemController < ApplicationController
   
   def sort
     if params.include?(:list)
-      params[:list].each_with_index{|id, idx| GalleryItem.update(id, :position => idx) }
+      params[:list].each_with_index{|id, idx| GalleryItem.update(id, :position => idx + 1) }
       @sorted = true
     end   
   end

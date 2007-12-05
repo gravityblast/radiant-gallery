@@ -16,8 +16,6 @@ class GalleryItem < ActiveRecord::Base
     :path_prefix => Radiant::Config["gallery.path_prefix"],
     :processor => Radiant::Config["gallery.processor"]
   
-  acts_as_list :scope => :gallery
-
   belongs_to :gallery
   
   has_many :infos, :class_name => "GalleryItemInfo", :dependent => :delete_all
@@ -25,8 +23,9 @@ class GalleryItem < ActiveRecord::Base
   before_create :set_filename_as_name
   before_create :set_position
   before_create :set_extension
-  before_create :set_gallery_id_if_is_a_thumbnails    
-   
+
+  before_destroy :update_positions
+     
   def jpeg?
     not (self.content_type =~ /jpeg/).nil?
   end
@@ -49,7 +48,10 @@ class GalleryItem < ActiveRecord::Base
           :content_type             => content_type, 
           :filename                 => thumbnail_name_for(thumbnail_options[:suffix]), 
           :temp_path                => create_temp_file,
-          :thumbnail_resize_options => thumbnail_options[:size]
+          :thumbnail_resize_options => thumbnail_options[:size],
+          :gallery_id               => self.gallery_id,
+          :position                 => nil,
+          :parent_id                => self.id
         }
         callback_with_args :before_thumbnail_saved, tmp_thumb
         tmp_thumb.save!        
@@ -65,6 +67,10 @@ class GalleryItem < ActiveRecord::Base
     gallery_folder = self.gallery ? self.gallery.id.to_s : self.parent.gallery.id.to_s
     File.join(RAILS_ROOT, file_system_path, gallery_folder, *partitioned_path(thumbnail_name_for(thumbnail)))
   end
+  
+  def last?
+    self.position ==  self.gallery.items.count
+  end
     
 protected    
 
@@ -75,15 +81,17 @@ protected
   end 
   
   def set_position
-    self.position = 0 if self.gallery && self.gallery.items.size == 0
+    self.position = self.gallery.items.count + 1 if self.parent.nil?
   end
   
   def set_extension
     self.extension = self.filename.split(".").last.to_s.downcase
   end      
-    
-  def set_gallery_id_if_is_a_thumbnails
-    self.gallery = self.parent.gallery if self.parent    
-  end  
+  
+  def update_positions
+    if self.parent.nil?
+      GalleryItem.update_all("position = (position - 1)", ["position > ? AND parent_id IS NULL and gallery_id = ?", self.position, self.gallery.id])
+    end
+  end
     
 end

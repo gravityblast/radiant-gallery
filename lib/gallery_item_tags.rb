@@ -148,7 +148,7 @@ module GalleryItemTags
     <pre><code><r:gallery:item:if_prev>...</r:gallery:item:if_prev></code></pre> }
   tag "gallery:item:if_prev" do |tag|
     if @current_item
-      tag.expand unless @current_item.position == 0
+      tag.expand unless @current_item.position == 1
     end
   end
   
@@ -222,7 +222,7 @@ protected
       position = 1 if tag.attr['position'] == 'first'
       position = rand(gallery.items.count) if tag.attr['position'] == 'random'
       position = gallery.items.count if tag.attr['position'] == 'last'
-      i = gallery.items.find_by_position(position.to_i - 1)    
+      i = gallery.items.find_by_position(position.to_i)    
     end
   end
 
