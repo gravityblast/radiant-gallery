@@ -18,21 +18,25 @@ class GalleryController < ApplicationController
   def retrieve_file
     @gallery = Gallery.find_by_id(params[:id])    
     @file_url = params[:file_url]
-    uri = URI.parse @file_url
+    uri = URI.parse(@file_url)
     raise "You can specify only HTTP and FTP url using file url mode." unless uri.is_a?(URI::HTTP) || uri.is_a?(URI::FTP)
-    open(@file_url) do |remote_file|
-      #file_path = File.join(RAILS_ROOT, 'public', @gallery.path, File.basename(@file_url))
-      #file_extension = File.extname(file_path)
-      #path_without_extension = file_path[0, file_path.size - file_extension.size]
-      #file_path = "#{path_without_extension}#{file_extension.split('?')[0]}"
-      #File.open(file_path, 'w') do |file|
-      #  file.write remote_file.read
-      #end
-      #content_type = remote_file.respond_to?(:content_type)  ? remote_file.content_type : 'Undefined content type'
-      #@gallery.items.create(:filename => File.basename(file_path), :content_type => content_type )
-      @gallery.items.create(:uploaded_data => remote_file)
-      flash[:notice] = "Your file has been saved below."
-    end    
+    tmp_file_path = File.join(Technoweenie::AttachmentFu.tempfile_path, File.basename(@file_url.gsub(/\?.*$/, '')))
+    open(@file_url) do |remote_file|      
+      File.open(tmp_file_path, 'w') do |file|
+        file.write(remote_file.read)
+      end                  
+    end
+    item = GalleryItem.new
+    item.attributes = {
+      :gallery_id => @gallery.id,
+      :temp_path => tmp_file_path,
+      :filename => File.basename(tmp_file_path),
+      :content_type => GalleryItem::KnownExtensions[File.extname(tmp_file_path).gsub(/^\./, '')][:content_type]
+    }    
+    item.save
+    FileUtils.rm(tmp_file_path)
+    [300, 500].each{|size| item.thumb(:width => size, :height => size, :prefix => 'admin')}        
+    flash[:notice] = "Your file has been saved below."    
   rescue Exception => e
     flash[:error] = "I had troubles retrieving your file :( -  #{e}"    
   ensure
