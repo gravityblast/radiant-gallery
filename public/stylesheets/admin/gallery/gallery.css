@@ -126,8 +126,12 @@ div#slider div#track {
 }
 
 div#slider div#track div#handle {
+	position: absolute;
+	left: 0;
+	top: -2px;
+	cursor: pointer;
 	width: 5px;
-	height: 8px;
+	height: 12px;
 	background: #CC0000;
 }
 
