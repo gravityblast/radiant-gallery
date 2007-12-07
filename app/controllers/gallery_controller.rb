@@ -20,22 +20,13 @@ class GalleryController < ApplicationController
     @file_url = params[:file_url]
     uri = URI.parse(@file_url)
     raise "You can specify only HTTP and FTP url using file url mode." unless uri.is_a?(URI::HTTP) || uri.is_a?(URI::FTP)
-    tmp_file_path = File.join(Technoweenie::AttachmentFu.tempfile_path, File.basename(@file_url.gsub(/\?.*$/, '')))
+    temp_file_path = File.join(Technoweenie::AttachmentFu.tempfile_path, File.basename(@file_url.gsub(/\?.*$/, '')))
     open(@file_url) do |remote_file|      
-      File.open(tmp_file_path, 'w') do |file|
+      File.open(temp_file_path, 'w') do |file|
         file.write(remote_file.read)
       end                  
     end
-    item = GalleryItem.new
-    item.attributes = {
-      :gallery_id => @gallery.id,
-      :temp_path => tmp_file_path,
-      :filename => File.basename(tmp_file_path),
-      :content_type => GalleryItem::KnownExtensions[File.extname(tmp_file_path).gsub(/^\./, '')][:content_type]
-    }    
-    item.save
-    FileUtils.rm(tmp_file_path)
-    [300, 500].each{|size| item.thumb(:width => size, :height => size, :prefix => 'admin')}        
+    create_item(@gallery, temp_file_path)
     flash[:notice] = "Your file has been saved below."    
   rescue Exception => e
     flash[:error] = "I had troubles retrieving your file :( -  #{e}"    
@@ -111,17 +102,7 @@ class GalleryController < ApplicationController
       import_path = File.join(galleries_absolute_path, 'import')
       path = File.expand_path(File.join(galleries_absolute_path, params[:path]))      
       if path =~ /^#{import_path}/ and File.exists?(path)
-        tmp_file = GalleryItem.copy_to_temp_file path, "#{rand Time.now.to_i}#{File.basename(path)}"
-        item = GalleryItem.new
-        item.attributes = {
-          :gallery_id => @gallery.id,
-          :temp_path => tmp_file,
-          :filename => File.basename(path),
-          :content_type => GalleryItem::KnownExtensions[File.extname(path).gsub(/^\./, '')][:content_type]
-        }
-        FileUtils.rm(path)
-        item.save
-        [300, 500].each{|size| item.thumb(:width => size, :height => size, :prefix => 'admin')}
+        create_item(@gallery, path)
         @imported = true
       end
     else
@@ -134,6 +115,21 @@ private
   def galleries_absolute_path
     galleries_folder = Radiant::Config['gallery.path'] || 'galleries'
     galleries_path = File.expand_path(File.join(RAILS_ROOT, 'public', galleries_folder))    
+  end
+
+  def create_item(gallery, temp_path)
+    item = GalleryItem.new
+    item.attributes = {
+      :gallery_id => gallery.id,
+      :temp_path => temp_path,
+      :filename => File.basename(temp_path),
+      :content_type => GalleryItem::KnownExtensions[File.extname(temp_path).gsub(/^\./, '')][:content_type]
+    }    
+    item.save
+    FileUtils.rm(temp_path)
+    if item.thumbnailable?
+      [300, 500].each{|size| item.thumb(:width => size, :height => size, :prefix => 'admin')}
+    end
   end
   
 end
