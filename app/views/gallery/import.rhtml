@@ -12,7 +12,7 @@
   <form method="post">
   	<% options = options_for_select @folders -%>
   	<%= select_tag 'path', options %>
-    <p class="buttons"><%= submit_tag "Import", :class => 'button' %> or <%= link_to 'Cancel', gallery_index_url %></p>
+    <p class="buttons"><%= submit_tag "Import", :class => 'button' %> or <%= link_to 'Cancel', gallery_show_url(@gallery) %></p>
   </form>
 <% else -%>  
   <script type="text/javascript" charset="utf-8">

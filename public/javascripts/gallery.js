@@ -413,6 +413,6 @@ var GalleryZoomSlider = Class.create({
 });
 
 document.observe('dom:loaded', function() {
-	new GalleryZoomSlider('handle', 'track');
-	GallerySortableList.create('list', '/admin/gallery_item/sort')
+	if($('slider')) new GalleryZoomSlider('handle', 'track');
+	if($('list')) GallerySortableList.create('list', '/admin/gallery_item/sort')
 });
