@@ -27,7 +27,7 @@ spinner = image('spinner.gif', :class => 'busy', :id => "gallery-busy-#{gallery.
 	<td class="status"><%= gallery.id %></td>
 	<td class="status published-status"><%= gallery.hidden ? 'hidden' : 'visible' %></td>
 	<td class="add-child"><%= link_to image('add-child', :alt => 'add child'), gallery_new_child_url(:parent_id => gallery) %></td>
-  <td class="remove"><%= link_to image_tag('admin/remove', :alt => 'remove gallery'), gallery_remove_url(:id => gallery) %></td>
+  <td class="remove"><%= link_to image_tag('admin/remove', :alt => 'remove gallery'), gallery_destroy_url(:id => gallery) %></td>
 </tr>
 
             

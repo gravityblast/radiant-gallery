@@ -1,13 +1,11 @@
 <% include_stylesheet 'admin/gallery/gallery' -%>
-
 <% items = pluralize(@gallery.items.count, 'Item') -%>
 <% items_question = @gallery.items.size > 0 ? " and #{items.downcase}" : "" -%>
 <h1 id="remove_article">Remove <%= items %></h1>
 <p>Are you sure you want to <strong class="warning">permanently remove</strong> the following gallery<%= items_question %>?</p>
 
-<table id="site-map" class="index" cellpadding="0" cellspacing="0" border="0">
-  <tbody>
-  
+<table class="index" cellpadding="0" cellspacing="0" border="0">
+  <tbody>  
     <tr id="gallery-<%= @gallery.id %>" class="node">
       <td class="gallery" style="padding-left: 4px">
         <span class="w1">
@@ -18,20 +16,10 @@
 					</a>
         </span>
       </td>
-    </tr>
-  
-  <% @gallery.items.each do |item| -%>
-    <tr id="page-6" class="node level-1 no-children">    
-      <td class="page" style="padding-left: 4px">
-        <span class="w1">
-          <%= item.public_filename %>
-        </span>
-      </td>     
-    </tr>
-  <% end -%> 
+    </tr>  
   </tbody>
 </table>
 
 <form method="post">
-  <p class="buttons"><%= submit_tag "Delete gallery", :class => 'button' %> or <%= link_to 'Cancel', gallery_index_url %></p>
+  <p class="buttons"><%= submit_tag "Destroy gallery", :class => 'button' %> or <%= link_to 'Cancel', gallery_index_url %></p>
 </form>

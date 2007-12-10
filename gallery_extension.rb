@@ -13,15 +13,18 @@ class GalleryExtension < Radiant::Extension
   define_routes do |map|
     map.with_options(:controller => 'gallery') do |gallery|
       gallery.gallery_index           'admin/gallery',                            :action => 'index'
-      gallery.gallery_edit            'admin/gallery/edit/:id',                   :action => 'edit'
-      gallery.gallery_new_child       'admin/gallery/:parent_id/new',             :action => 'edit'
+      gallery.gallery_new             'admin/gallery/new',                        :action => 'new'
+      gallery.gallery_new_child       'admin/gallery/:parent_id/new',             :action => 'new'
+      gallery.gallery_create          'admin/gallery/create',                     :action => 'create'
+      gallery.gallery_create_child    'admin/gallery/:parent_id/create',          :action => 'create'
+      gallery.gallery_edit            'admin/gallery/edit/:id',                   :action => 'edit'      
+      gallery.gallery_update          'admin/gallery/update/:id',                 :action => 'update'
       gallery.gallery_show            'admin/gallery/show/:id',                   :action => 'show'
-      gallery.gallery_remove          'admin/gallery/remove/:id',                 :action => 'remove'
+      gallery.gallery_destroy         'admin/gallery/destroy/:id',                :action => 'destroy'
       gallery.gallery_children        'admin/gallery/children/:id',               :action => 'children'      
       gallery.gallery_retrieve_file   'admin/gallery/retrieve_file',              :action => 'retrieve_file'      
       gallery.gallery_clear_thumbs    'admin/gallery/clear_thumbs/:id',           :action => 'clear_thumbs'      
       gallery.gallery_import          'admin/gallery/import/:id',                 :action => 'import'
-      gallery.gallery_importing       'admin/gallery/importing/:id',              :action => 'importing'
     end
     map.with_options(:controller => 'gallery_item') do |gallery_item|
       gallery_item.gallery_item_create      'admin/gallery_item/create',          :action => 'create'

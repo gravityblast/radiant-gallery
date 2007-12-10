@@ -42,6 +42,7 @@ GalleryImporter.prototype = {
 	},
 	
 	start: function() {  
+		
 		this.import_next();
 	},
 	
@@ -50,7 +51,7 @@ GalleryImporter.prototype = {
 		if(this.index < this.files.length && this.options.url) {
 			this.updateLog("Importing " + (this.index + 1) + " of " + this.files.length + " files...");
 			new Ajax.Request(
-		    this.options.url + '/' + this.options.gallery_id + '?path=' + this.files[this.index].path,
+		    this.options.url + '/' + this.options.gallery_id + '?file_path=' + this.files[this.index].path,
 		    {
 		      asynchronous: true,
 					evalScripts: true,
@@ -413,6 +414,10 @@ var GalleryZoomSlider = Class.create({
 });
 
 document.observe('dom:loaded', function() {
-	if($('slider')) new GalleryZoomSlider('handle', 'track');
-	if($('list')) GallerySortableList.create('list', '/admin/gallery_item/sort')
+	when('slider', function() {
+		new GalleryZoomSlider('handle', 'track');
+	});
+	when('list', function() {
+		GallerySortableList.create('list', '/admin/gallery_item/sort')
+	});
 });

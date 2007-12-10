@@ -1,7 +1,7 @@
 <% include_stylesheet 'admin/gallery/gallery' -%>
-<h1 id="new_page">Edit Gallery</h1>
+<h1 id="new_page">New Gallery</h1>
 
-<% form_for(:gallery, :url => {:action => 'update'}) do |g| -%>
+<% form_for(:gallery, :url => {:action => 'create', :parent_id => params[:parent_id]}) do |g| -%>
   <%= render :partial => 'form', :locals => {:g => g} %>
 <% end -%>
 

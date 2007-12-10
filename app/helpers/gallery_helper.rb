@@ -7,7 +7,7 @@ module GalleryHelper
     links << link_to('Import files', gallery_import_url(:id => @gallery.id))
     links << link_to('Clear thumbs', gallery_clear_thumbs_url(:id => @gallery))
     links << link_to('Add Child Gallery', gallery_new_child_url(:parent_id => @gallery))
-    links << link_to('Delete gallery', gallery_remove_url(:id => @gallery))
+    links << link_to('Destroy gallery', gallery_destroy_url(:id => @gallery))
     content << links.join(" | ")
     content << '</div>'
   end
