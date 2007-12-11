@@ -38,7 +38,12 @@ class GalleryItem < ActiveRecord::Base
     thumbnail_options = {}
     if options[:width] or options[:height]      
       thumbnail_options[:suffix] = "#{options[:prefix] ? options[:prefix].to_s + '_' : ''}#{options[:width]}x#{options[:height]}"
-      thumbnail_options[:size] = "#{options[:width]}x#{options[:height]}"      
+      
+      max_width, max_height = options[:width], options[:height]      
+      scale = (max_width > max_height ? max_width : max_height).to_f / (width > height ? width : height)            
+      w, h = (width * scale).to_i, (height * scale).to_i      
+#      thumbnail_options[:size] = [w, h]
+      thumbnail_options[:size] = proportional_resize(:max_width => options[:width], :max_height => options[:height])
     end
     if respond_to?(:process_attachment_with_processing) && thumbnailable? && parent_id.nil?
       tmp_thumb = find_or_initialize_thumbnail(thumbnail_options[:suffix])
@@ -92,6 +97,13 @@ protected
     if self.parent.nil?
       GalleryItem.update_all("position = (position - 1)", ["position > ? AND parent_id IS NULL and gallery_id = ?", self.position, self.gallery.id])
     end
+  end
+  
+  def proportional_resize(options = {})
+    max_width, max_height = options[:max_width].to_f || width.to_f, options[:max_height].to_f || height.to_f
+    aspect_ratio, pic_ratio = max_width / max_height.to_f, width.to_f / height.to_f
+    scale_ratio = (pic_ratio > aspect_ratio) ?  max_width / width : max_height / height  
+    [(width * scale_ratio).to_i, (height * scale_ratio).to_i]    
   end
     
 end

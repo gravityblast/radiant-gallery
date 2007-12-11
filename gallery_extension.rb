@@ -64,7 +64,7 @@ class GalleryExtension < Radiant::Extension
   
   def load_gallery_configuration    
     filename = File.join(GalleryExtension.root, 'config', 'gallery.yml')
-    raise GalleryExtensionError.new("GalleryExtension error: configuration file does not exist") unless File.exists?(filename)
+    raise GalleryExtensionError.new("GalleryExtension error: configuration file does not exist. Rename gallery.yml.default to gallery.yml.") unless File.exists?(filename)
     configurations = YAML::load_file(filename)
     configurations.each do |key, value|
       Radiant::Config["gallery.#{key}"] = value
