@@ -6,7 +6,7 @@ require_dependency 'exifr/tiff'
 class GalleryExtensionError < StandardError; end
 
 class GalleryExtension < Radiant::Extension
-  version "0.7.2"
+  version "0.7.3"
   description "Allows to manage list of files/images grouped into galleries"
   url "http://gravityblast.com/projects/radiant-gallery-extension/"
   

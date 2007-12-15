@@ -1,30 +1,3 @@
-var GallerySortableList = {
-
-	dragged: null,   
-	
-  create: function(element, url) {
-		Sortable.create(element, {
-			overlap:'horizontal',
-			constraint:'horizontal',
-			handle: 'image',
-			tag: 'div',
-			only: 'item',
-			onUpdate:function(){
-				if(GallerySortableList.dragged) {
-					new Effect.Highlight(GallerySortableList.dragged, {duration:  0.5})
-				}
-				GallerySortableList.dragged = null;
-				new Ajax.Request(url, {asynchronous:true, evalScripts:true, parameters:Sortable.serialize(element)});
-			},			
-			onChange: function(element) {
-				GallerySortableList.dragged = element;
-			}
-		});
-	}
-	
-};
-    
-
 var GalleryImporter = Class.create();
 GalleryImporter.prototype = {
 	initialize: function() {
@@ -207,13 +180,37 @@ GalleryTree.prototype = {
 
 var Gallery = {
 	
+	init: function() {
+		Gallery.sortable = new LiteSortable('list', {
+			overlap: 'horizontal',
+			constraint: 'horizontal',
+			handle: 'image',
+			tag: 'div',
+			only: 'item',
+			onUpdate: GalleryItems.sort
+		});
+	},
+	
 	toggle_by_upload_and_by_url: function() {
     ['by-upload', 'by-url', 'open-by-upload', 'open-by-url'].each(function(id) {
       Element.toggle(id);
     });  
-  }
+  },		
+	
+	remove: function(id) {
+    var e = $('item_' + id);
+		if(e) {
+	    Effect.Puff(e, {
+				afterFinish: function() {
+					e.remove();
+					Gallery.sortable.remove(e);
+				}
+			});			
+		}    
+  },
 	
 };
+
 
 var GalleryItems = {
 	
@@ -246,18 +243,7 @@ var GalleryItems = {
         }
       );
     }
-  },
-
-	remove: function(id) {
-    var e = $('item_' + id);
-		if(e) {
-	    Effect.Puff(e, {
-				afterFinish: function() {
-					e.remove();
-				}
-			});			
-		}    
-  },
+  },	
 
 	zoomIn: function() {
 		GalleryItems.scale(1.2);
@@ -275,6 +261,15 @@ var GalleryItems = {
 			  e.setStyle({width: w * percent + 'px', height: h * percent + 'px'});
 			});		  
 		})
+	},
+	
+	sort: function(list, element, id, old_position, new_position) {
+		new Effect.Highlight(element, {duration:  0.5})
+		new Ajax.Request('/admin/gallery_item/sort/', {
+			asynchronous:true,
+			evalScripts:true,
+			parameters: 'id=' + id + '&old_position=' + old_position + '&new_position=' + new_position
+		});
 	}
 
 };
@@ -413,11 +408,9 @@ var GalleryZoomSlider = Class.create({
 	
 });
 
+GalleryZoomSlider.init = function() { new GalleryZoomSlider('handle', 'track'); }
+
 document.observe('dom:loaded', function() {
-	when('slider', function() {
-		new GalleryZoomSlider('handle', 'track');
-	});
-	when('list', function() {
-		GallerySortableList.create('list', '/admin/gallery_item/sort')
-	});
+	when('slider', GalleryZoomSlider.init);
+	when('list', Gallery.init);
 });

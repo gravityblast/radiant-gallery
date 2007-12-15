@@ -49,10 +49,15 @@ class GalleryItemController < ApplicationController
   end 
   
   def sort
-    if params.include?(:list)
-      params[:list].each_with_index{|id, idx| GalleryItem.update(id, :position => idx + 1) }
-      @sorted = true
-    end   
+    old_position, new_position = params[:old_position].to_i, params[:new_position].to_i
+    @item = GalleryItem.find(:first, :conditions => ["id = ? AND position = ?", params[:id], old_position])
+    if @item
+      x, y, z = old_position < new_position ? ["-", "<", ">"] : ["+", ">", "<"]
+      GalleryItem.update_all("position = (position #{x} 1)", ["parent_id IS NULL AND gallery_id = ? AND position #{y}= ? AND position #{z}= ?", @item.gallery_id, new_position, old_position])
+      @item.update_attribute('position', new_position)
+    else
+      @error = true
+    end
   end
   
 private
