@@ -8,7 +8,7 @@ class GalleryExtensionError < StandardError; end
 class GalleryExtension < Radiant::Extension
   version "0.7.3"
   description "Allows to manage list of files/images grouped into galleries"
-  url "http://gravityblast.com/projects/radiant-gallery-extension/"
+  url "http://gravityblast.com/projects/gor/"
   
   define_routes do |map|
     map.with_options(:controller => 'gallery') do |gallery|
