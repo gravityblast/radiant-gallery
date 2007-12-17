@@ -26,7 +26,6 @@ GalleryImporter.prototype = {
 			new Ajax.Request(
 		    this.options.url + '/' + this.options.gallery_id + '?file_path=' + this.files[this.index].path,
 		    {
-		      asynchronous: true,
 					evalScripts: true,
 					onLoading: function(request) {
 	          Element.show($('file-busy-' + this.files[this.index].id)); 					
@@ -143,7 +142,6 @@ GalleryTreeItem.prototype = {
 	    this.row,
 	    this.options.url + '/' + this.id,
 	    {
-	      asynchronous: true,
 	      insertion: Insertion.After,
 				evalScripts: true,
 				onLoading: function(request) {
@@ -266,7 +264,6 @@ var GalleryItems = {
 	sort: function(list, element, id, old_position, new_position) {
 		new Effect.Highlight(element, {duration:  0.5})
 		new Ajax.Request('/admin/gallery_item/sort/', {
-			asynchronous:true,
 			evalScripts:true,
 			parameters: {
 				id: id,
