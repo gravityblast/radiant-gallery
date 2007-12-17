@@ -268,7 +268,11 @@ var GalleryItems = {
 		new Ajax.Request('/admin/gallery_item/sort/', {
 			asynchronous:true,
 			evalScripts:true,
-			parameters: 'id=' + id + '&old_position=' + old_position + '&new_position=' + new_position
+			parameters: {
+				id: id,
+				old_position: old_position,
+				new_position: new_position
+			}
 		});
 	}
 
