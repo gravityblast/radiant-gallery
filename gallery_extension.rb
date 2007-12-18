@@ -36,8 +36,7 @@ class GalleryExtension < Radiant::Extension
     end
   end
   
-  def activate            
-    Page.send(:include, GalleryTags, GalleryItemTags, GalleryItemInfoTags, GalleryLightboxTags)
+  def activate    
     init_attachment_fu
     init
     admin.tabs.add("Galleries", "/admin/gallery", :after => "Layouts", :visibility => [:all])
@@ -61,6 +60,10 @@ class GalleryExtension < Radiant::Extension
   end
   
   def init
+    Page.send(:include, GalleryTags, GalleryItemTags, GalleryItemInfoTags, GalleryLightboxTags)
+    UserActionObserver.class_eval do
+      observe Gallery, GalleryItem
+    end
     GalleryPage
     GalleryCachedPage
     load_configuration

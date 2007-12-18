@@ -18,6 +18,9 @@ class GalleryItem < ActiveRecord::Base
   
   belongs_to :gallery
   
+  belongs_to :created_by, :class_name => 'User', :foreign_key => 'created_by'
+  belongs_to :update_by, :class_name => 'User', :foreign_key => 'created_by'
+  
   has_many :infos, :class_name => "GalleryItemInfo", :dependent => :delete_all
 
   before_create :set_filename_as_name

@@ -14,8 +14,11 @@ class Gallery < ActiveRecord::Base
   
   has_many :thumbnails, :class_name => 'GalleryItem',
     :conditions => "gallery_items.parent_id IS NOT NULL"
+    
+  belongs_to :created_by, :class_name => 'User', :foreign_key => 'created_by'
+  belongs_to :update_by, :class_name => 'User', :foreign_key => 'created_by'
       
-  attr_protected :slug, :path
+  attr_protected :slug, :path    
   
   validates_presence_of :name
   validates_uniqueness_of :name, :scope => :parent_id
