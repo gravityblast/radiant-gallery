@@ -36,52 +36,65 @@ class GalleryExtension < Radiant::Extension
     end
   end
   
-  def activate    
-    GalleryPage
-    GalleryCachedPage
-    admin.tabs.add "Galleries", "/admin/gallery", :after => "Layouts", :visibility => [:all]
-    Page.send :include, GalleryTags, GalleryItemTags, GalleryItemInfoTags, GalleryLightboxTags
-    
-    # AttachmentFu
+  def activate            
+    Page.send(:include, GalleryTags, GalleryItemTags, GalleryItemInfoTags, GalleryLightboxTags)
+    init_attachment_fu
+    init
+    admin.tabs.add("Galleries", "/admin/gallery", :after => "Layouts", :visibility => [:all])
+  end
+  
+  def init_attachment_fu
     Tempfile.class_eval do
       # overwrite so tempfiles use the extension of the basename.  important for rmagick and image science
       def make_tmpname(basename, n)
         ext = nil
         sprintf("%s%d-%d%s", basename.to_s.gsub(/\.\w+$/) { |s| ext = s; '' }, $$, n, ext)
       end
-    end        
-    
+    end            
     ActiveRecord::Base.send(:extend, Technoweenie::AttachmentFu::ActMethods)
     Technoweenie::AttachmentFu.tempfile_path = ATTACHMENT_FU_TEMPFILE_PATH if Object.const_defined?(:ATTACHMENT_FU_TEMPFILE_PATH)
-    FileUtils.mkdir_p Technoweenie::AttachmentFu.tempfile_path        
-    load_gallery_configuration
-    load_content_types
+    FileUtils.mkdir_p Technoweenie::AttachmentFu.tempfile_path
   end
   
   def deactivate
     admin.tabs.remove "Galleries"
   end
   
-  def load_gallery_configuration    
-    filename = File.join(GalleryExtension.root, 'config', 'gallery.yml')
-    raise GalleryExtensionError.new("GalleryExtension error: configuration file does not exist. Rename gallery.yml.default to gallery.yml.") unless File.exists?(filename)
-    configurations = YAML::load_file(filename)
-    configurations.each do |key, value|
-      Radiant::Config["gallery.#{key}"] = value
+  def init
+    GalleryPage
+    GalleryCachedPage
+    load_configuration
+    load_content_types
+  end
+  
+  def load_configuration    
+    load_yaml('gallery') do |configurations|      
+      configurations.each do |key, value|
+        Radiant::Config["gallery.#{key}"] = value
+      end
     end
   end
   
   def load_content_types
-   filename = File.join(GalleryExtension.root, 'config', 'content_types.yml')
-    content_types = YAML::load_file(filename)
-    content_types.each do |name, attributes|
-      attributes["extensions"].each do |extension|
-        GalleryItem::KnownExtensions[extension] = {
-          :content_type => name,
-          :icon => attributes["icon"]
-        }
-      end
-    end    
+   load_yaml('content_types') do |content_types|
+     content_types.each do |name, attributes|
+       attributes["extensions"].each do |extension|
+         GalleryItem::KnownExtensions[extension] = {
+           :content_type => name,
+           :icon => attributes["icon"]
+         }
+       end
+     end
+   end
+  end
+   
+private 
+  
+  def load_yaml(filename)
+    filename = File.join(GalleryExtension.root, 'config', "#{filename}.yml")
+    raise GalleryExtensionError.new("GalleryExtension error: #{filename} doesn't exist.") unless File.exists?(filename)
+    data = YAML::load_file(filename)
+    yield(data)
   end
     
 end
