@@ -1,4 +1,5 @@
 require 'tempfile'
+require_dependency 'application'
 require_dependency 'open-uri'
 require_dependency 'exifr/jpeg'
 require_dependency 'exifr/tiff'
@@ -6,7 +7,7 @@ require_dependency 'exifr/tiff'
 class GalleryExtensionError < StandardError; end
 
 class GalleryExtension < Radiant::Extension
-  version "0.7.4"
+  version RadiantGallery::Version.to_s
   description "Allows to manage list of files/images grouped into galleries"
   url "http://gravityblast.com/projects/radiant-gallery/"
   
@@ -31,7 +32,6 @@ class GalleryExtension < Radiant::Extension
       gallery_item.gallery_item_edit        'admin/gallery_item/:id/edit',        :action => 'edit'
       gallery_item.gallery_item_update      'admin/gallery_item/update/:id',      :action => 'update'
       gallery_item.gallery_item_destroy     'admin/gallery_item/:id/destroy',     :action => 'destroy'
-      gallery_item.gallery_item_edit_image  'admin/gallery_item/:id/edit_image',  :action => 'edit_image'
       gallery_item.gallery_item_sort        'admin/gallery_item/sort',            :action => 'sort'            
     end
   end
@@ -39,7 +39,9 @@ class GalleryExtension < Radiant::Extension
   def activate    
     init_attachment_fu
     init
-    admin.tabs.add("Galleries", "/admin/gallery", :after => "Layouts", :visibility => [:all])
+    tab_options = {:visibility => [:all]}
+    Radiant::Config["gallery.gallery_based"] == 'true' ? tab_options[:before] = "Pages" : tab_options[:after] = "Layouts"
+    admin.tabs.add("Galleries", "/admin/gallery", tab_options)
   end
   
   def init_attachment_fu
@@ -68,6 +70,13 @@ class GalleryExtension < Radiant::Extension
     GalleryCachedPage
     load_configuration
     load_content_types
+    if Radiant::Config["gallery.gallery_based"] == 'true'
+      Admin::WelcomeController.class_eval do
+        def index
+          redirect_to gallery_index_url
+        end
+      end
+    end
   end
   
   def load_configuration    

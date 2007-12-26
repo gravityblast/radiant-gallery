@@ -37,9 +37,9 @@ module GalleryHelper
   
   def item_edit_image_button(item)
     content = ''
-    if item.image?
-      content << link_to(image('gallery/edit-image.png'),  gallery_item_edit_image_url(:id => item), :title => 'Edit image' )
-    end
+    #if item.image?
+    #  content << link_to(image('gallery/edit-image.png'),  gallery_item_edit_image_url(:id => item), :title => 'Edit image' )
+    #end
     content
   end
   

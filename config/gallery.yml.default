@@ -1,2 +1,3 @@
 path_prefix: public/galleries
 processor: rmagick
+gallery_based: no
