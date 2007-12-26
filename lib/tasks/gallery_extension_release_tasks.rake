@@ -1,4 +1,5 @@
 require File.dirname(__FILE__) + '/../radiant_gallery'
+require "rubyforge"
 
 namespace :radiant do
   namespace :extensions do
@@ -13,8 +14,8 @@ namespace :radiant do
       GALLERY_RUBY_FORGE_USER = ENV['RUBY_FORGE_USER'] || 'pilu'
 
       GALLERY_RELEASE_NAME  = GALLERY_PKG_VERSION
-      GALLERY_RUBY_FORGE_GROUPID = '5132'
-      GALLERY_RUBY_FORGE_PACKAGEID = '6446'
+      GALLERY_RUBY_FORGE_GROUPID = 5132
+      GALLERY_RUBY_FORGE_PACKAGEID = 6446
       
       task :clean do
         rm_rf GALLERY_PKG_DESTINATION
@@ -29,15 +30,15 @@ namespace :radiant do
       
       desc "Publishes the release files to RubyForge."
       task :release => [ :clean, :package ] do
-        system %{rubyforge login --username #{GALLERY_RUBY_FORGE_USER}}
-        %w[ tgz zip ].each do |extension|
-          file = File.join(GALLERY_PKG_DESTINATION, "#{GALLERY_PKG_FILE_NAME}.#{extension}")
-          system %{rubyforge add_release #{GALLERY_RUBY_FORGE_GROUPID} #{GALLERY_RUBY_FORGE_PACKAGEID} "#{GALLERY_RELEASE_NAME}" #{file}}
-        end
+        rf = RubyForge.new
+        puts "Logging in"
+        rf.login        
+        c = rf.userconfig
+      	files = %w[ tgz zip ].map{|ext| File.join(GALLERY_PKG_DESTINATION, "#{GALLERY_PKG_FILE_NAME}.#{ext}") }
+      	puts "Releasing #{GALLERY_PKG_NAME} v. #{GALLERY_PKG_VERSION}"
+      	rf.add_release GALLERY_RUBY_FORGE_GROUPID, GALLERY_RUBY_FORGE_PACKAGEID, GALLERY_PKG_VERSION.to_s, *files
       end
-      
-      
+   
     end
-
   end
 end
