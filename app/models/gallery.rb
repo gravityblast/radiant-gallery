@@ -16,7 +16,7 @@ class Gallery < ActiveRecord::Base
     :conditions => "gallery_items.parent_id IS NOT NULL"
     
   belongs_to :created_by, :class_name => 'User', :foreign_key => 'created_by'
-  belongs_to :update_by, :class_name => 'User', :foreign_key => 'created_by'
+  belongs_to :update_by, :class_name => 'User', :foreign_key => 'update_by'
       
   attr_protected :slug, :path    
   

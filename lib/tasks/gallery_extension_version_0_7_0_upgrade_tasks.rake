@@ -8,7 +8,7 @@ namespace :radiant do
         task :upgrade_filesystem_structure => :environment do
           print "Creating new filesystem structure..."
           GalleryItem.find(:all).each do |item|            
-            old_folder_path = File.expand_path(File.join(RADIANT_ROOT, 'public', 'galleries', item.gallery.id.to_s))
+            old_folder_path = File.expand_path(File.join(RAILS_ROOT, 'public', 'galleries', item.gallery.id.to_s))
             old_thumbs_folder_path = File.join(old_folder_path, 'thumbs')
             new_folder_path = File.expand_path(File.dirname(item.full_filename))
             

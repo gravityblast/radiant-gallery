@@ -8,7 +8,7 @@ namespace :radiant do
       GALLERY_PKG_NAME = 'radiant-gallery'
       GALLERY_PKG_VERSION = RadiantGallery::Version.to_s
       GALLERY_PKG_FILE_NAME = "#{GALLERY_PKG_NAME}-#{GALLERY_PKG_VERSION}"
-      GALLERY_PKG_DESTINATION = ENV["GALLERY_PKG_DESTINATION"] || File.expand_path(RADIANT_ROOT + "/../radiant-gallery-pkg/#{GALLERY_PKG_VERSION}")
+      GALLERY_PKG_DESTINATION = ENV["GALLERY_PKG_DESTINATION"] || File.expand_path(RAILS_ROOT + "/../radiant-gallery-pkg/#{GALLERY_PKG_VERSION}")
       
       GALLERY_RUBY_FORGE_PROJECT = GALLERY_PKG_NAME
       GALLERY_RUBY_FORGE_USER = ENV['RUBY_FORGE_USER'] || 'pilu'
