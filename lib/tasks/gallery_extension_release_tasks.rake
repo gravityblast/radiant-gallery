@@ -1,5 +1,4 @@
 require File.dirname(__FILE__) + '/../radiant_gallery'
-require "rubyforge"
 
 namespace :radiant do
   namespace :extensions do
@@ -30,6 +29,7 @@ namespace :radiant do
       
       desc "Publishes the release files to RubyForge."
       task :release => [ :clean, :package ] do
+        require "rubyforge"
         rf = RubyForge.new
         puts "Logging in"
         rf.login        
