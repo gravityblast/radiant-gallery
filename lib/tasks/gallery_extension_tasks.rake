@@ -64,8 +64,18 @@ namespace :radiant do
         end
       end
       
+      desc "Create gallery.yml file"
+      task :create_config_file do
+        config_path = File.join(RAILS_ROOT, 'vendor/extensions/gallery/config')
+        default_config_file = File.join(config_path, 'gallery.yml.default')
+        config_file = File.join(config_path, 'gallery.yml')
+        if File.exists?(default_config_file) && !File.exists?(config_file)
+          FileUtils.cp(default_config_file, config_file)
+        end
+      end
+      
       desc "Migrates and copies files in public/admin"
-      task :install => [:environment, :migrate, :update, :import_layouts] do
+      task :install => [:create_config_file, :environment, :migrate, :update, :import_layouts] do
         puts "Gallery extension has been installed."
         puts "1. Create a new page with 'Gallery' as page type."
         puts "2. Select a gallery layout for your page."
