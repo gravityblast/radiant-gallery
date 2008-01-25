@@ -27,6 +27,8 @@ class Gallery < ActiveRecord::Base
   before_save :set_slug
   after_create :set_path
   before_destroy :unlink_folder
+
+  has_many :pages, :foreign_key => 'base_gallery_id', :dependent => :nullify
   
   def clear_thumbs
     self.thumbnails.find(:all, :conditions => "thumbnail NOT LIKE 'admin_%'").each do |item|
@@ -46,8 +48,17 @@ class Gallery < ActiveRecord::Base
     File.join(self.absolute_path, 'thumbs')
   end
   
-  def url
-    File.join((self.ancestors.reverse << self).collect{|a| a.slug})
+  def url(root_id = nil)
+    File.join((self.ancestors_from(root_id).reverse << self).collect{|a| a.slug})
+  end
+  
+  def ancestors_from(root_id = nil)
+    ancestors = []
+    (self.ancestors).each do |a|      
+      break if a.id == root_id
+      ancestors << a
+    end
+    ancestors
   end
   
 protected

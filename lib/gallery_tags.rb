@@ -38,11 +38,11 @@ module GalleryTags
   tag 'gallery:breadcrumbs' do |tag|
     gallery = find_gallery(tag)
     breadcrumbs = []
-    gallery.ancestors.unshift(gallery).each do |ancestor|
+    gallery.ancestors_from(self.base_gallery_id).unshift(gallery).each do |ancestor|
       if @current_gallery == ancestor && @current_item.nil?
         breadcrumbs << %|#{ancestor.name}|
-      elsif
-        ancestor_absolute_url = File.join(tag.render('url'), ancestor.url)
+      else
+        ancestor_absolute_url = File.join(tag.render('url'), ancestor.url(self.base_gallery_id))
         breadcrumbs.unshift(%|<a href="#{ancestor_absolute_url}">#{ancestor.name}</a>|)
       end
     end

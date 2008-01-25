@@ -2,6 +2,14 @@ module GalleryPageExtensions
   
   include Radiant::Taggable
   
+  class << self
+    def included(base)
+      base.belongs_to :base_gallery, :class_name => 'Gallery', :foreign_key => 'base_gallery_id'
+    end
+  end
+  
+  
+  
   class GalleryTagError < StandardError; end   
   
   desc %{    
@@ -39,7 +47,13 @@ module GalleryPageExtensions
     raise GalleryTagError.new('Invalid value for attribute level. Valid values are: current, top, bottom') unless %[current top bottom all].include?(level)
     case level
     when 'current'
-      options[:conditions][:parent_id] = @current_gallery ? @current_gallery.id : nil
+      options[:conditions][:parent_id] = if @current_gallery
+        @current_gallery.id
+      elsif self.base_gallery
+        self.base_gallery
+      else
+        nil
+      end
     when 'top'
       options[:conditions][:parent_id] = nil
     when 'bottom'
@@ -73,7 +87,7 @@ module GalleryPageExtensions
     attributes = options.inject('') { |s, (k, v)| s << %{#{k.downcase}="#{v}" } }.strip
     attributes = " #{attributes}" unless attributes.empty?
     text = tag.double? ? tag.expand : tag.render('name')
-    gallery_url = File.join(tag.render('url'), gallery.url)
+    gallery_url = File.join(tag.render('url'), gallery.url(self.base_gallery_id))
     %{<a href="#{gallery_url}#{anchor}"#{attributes}>#{text}</a>}
   end
   
@@ -83,7 +97,7 @@ module GalleryPageExtensions
     Provides url for current gallery }
   tag "gallery:gallery_url" do |tag|
     gallery = find_gallery(tag)
-    File.join(tag.render('url'), gallery.url)    
+    File.join(tag.render('url'), gallery.url(self.base_gallery_id))
   end    
   
   def current_gallery
@@ -101,8 +115,7 @@ module GalleryPageExtensions
       if @current_gallery
         if !item.nil? && !action.nil?
           item_id, item_extension = item.split(".")
-          @current_item = find_gallery_item(@current_gallery, item_id, item_extension)
-          if @current_item
+          if @current_item = @current_gallery.items.find_by_id_and_extension(item_id, item_extension)
             self
           else
             super
@@ -119,26 +132,17 @@ module GalleryPageExtensions
   end
   
   def find_gallery_by_path(slug)
-    slugs = slug.split('/')      
-    unless slugs.empty?
-      current_gallery = Gallery.find_by_slug(slugs.shift)
-      if current_gallery
-        until slugs.empty?
-          path = slugs.shift
-          current_gallery = current_gallery.children.find_by_slug(path)
-          break unless current_gallery
-        end
+    slugs = slug.split('/')
+    current_gallery = nil    
+    while slug = slugs.shift do
+      unless current_gallery        
+        current_gallery = Gallery.find_by_slug(slug, :conditions => {:parent_id => self.base_gallery_id || nil}) 
       else
-        nil
+        current_gallery = current_gallery.children.find_by_slug(slug)
       end
-      return current_gallery
-    else
-      nil
-    end
+      break unless current_gallery
+    end    
+    current_gallery
   end 
-  
-  def find_gallery_item(gallery, item_id, item_extension)
-    gallery.items.find_by_id_and_extension(item_id, item_extension)
-  end
   
 end

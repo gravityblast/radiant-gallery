@@ -131,7 +131,7 @@ module GalleryItemTags
     Provides page url for current gallery item }
   tag "gallery:item:page_url" do |tag|
     item = find_item(tag)
-    File.join(tag.render('url'), item.gallery.url, "#{item.id}.#{item.extension}/show")
+    File.join(tag.render('url'), item.gallery.url(self.base_gallery_id), "#{item.id}.#{item.extension}/show")
   end
   
   desc %{    
