@@ -20,14 +20,14 @@ namespace :radiant do
         rm_rf GALLERY_PKG_DESTINATION
       end
       
-      desc "Packages the radiant gallery extension"
+      # Packages the radiant gallery extension
       task :package => [ :clean ] do
         mkdir_p GALLERY_PKG_DESTINATION
         system %{cd vendor/extensions; tar -czvf #{GALLERY_PKG_DESTINATION}/#{GALLERY_PKG_NAME}-#{GALLERY_PKG_VERSION}.tgz gallery}
         system %{cd vendor/extensions; zip -r    #{GALLERY_PKG_DESTINATION}/#{GALLERY_PKG_NAME}-#{GALLERY_PKG_VERSION}.zip gallery}
       end
       
-      desc "Publishes the release files to RubyForge."
+      # Publishes the release files to RubyForge.
       task :release => [ :clean, :package ] do
         require "rubyforge"
         rf = RubyForge.new
