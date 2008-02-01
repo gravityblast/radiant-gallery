@@ -32,12 +32,12 @@ module GalleryItemTags
     options[:order] = "#{by} #{order}"
     options[:limit] = tag.attr['limit'] ? tag.attr['limit'].to_i  : 9999
     options[:offset] = tag.attr['offset'] ? tag.attr['offset'].to_i  : 0
+    options[:conditions] = {:parent_id => nil}
     
-    page_number = tag.globals.page.request.params["page"] ? tag.globals.page.request.params["page"].first : 0
-    if tag.attr['limit'] && page_number
-      number = page_number.to_i
-      number = 1 if number < 1
-      options[:offset] = tag.attr['limit'].to_i * number
+    @page_number = tag.globals.page.request.params["page"] && tag.globals.page.request.params["page"].first.to_i > 1 ? tag.globals.page.request.params["page"].first.to_i : 1
+    unless tag.attr['limit'].nil?
+      options[:offset] = tag.attr['limit'].to_i * (@page_number - 1)      
+      @gallery_items_per_page = tag.attr['limit'].to_i
     end
 
     scope = tag.attr['scope'] ? tag.attr['scope'] : 'gallery'
@@ -140,6 +140,18 @@ module GalleryItemTags
   tag "gallery:item:if_next" do |tag|
     if @current_item
       tag.expand unless @current_item.last?
+    end
+  end
+  
+  tag "gallery:items:next_page" do |tag|
+    if @gallery_items_per_page
+      text = tag.attr['text'] || "Next"
+      conditions = { :parent_id => nil }
+      conditions[:gallery_id] = @current_gallery.id if @current_gallery
+      count_all = GalleryItem.count(:limit => @gallery_items_per_page, :conditions => conditions)
+      if @page_number < (count_all / @gallery_items_per_page.to_f).ceil
+        %|<a href="#{tag.render('url')}?page=#{@page_number + 1}">#{text}</a>|
+      end
     end
   end
   
