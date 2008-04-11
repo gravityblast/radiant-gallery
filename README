@@ -4,10 +4,28 @@
   Version: 0.7.9
   Contact: andrea AT gravityblast DOT com
 
-The Gallery extension allows to manage galleries of images/video/files.
+Radiant-Gallery is a RadiantCMS extension that allows to manage galleries of images, photos and all kind of files.
 
-More info at: http://gravityblast.com/projects/radiant-gallery/
+== Features
 
+  * Multiple nested galleries
+  * Multiple upload
+  * Import from ftp
+  * Images/Files sorting by drag-n-drop
+  * Automatic thumbnail generation for images after upload
+  * Preview in lightwindow for images
+  
+== Installation
+
+  After installing radiant check out the radiant-gallery extension under vendor/extensions
+  
+    git clone git://github.com/pilu/radiant-gallery.git
+  
+  Then install it with the following rake task:
+  
+    rake RAILS_ENV=production radiant:extensions:gallery:install
+    
+Enjoy :)
 
 == Contributors
 
