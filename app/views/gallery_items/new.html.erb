@@ -1,0 +1,90 @@
+<script type="text/javascript" charset="utf-8">
+  var GalleryUploadForms = {
+    
+    template: '<div class="form-container" id="form-container-#{form_id}">' +
+              '  <div id="form-#{form_id}" class="form">' +
+              '    <form onsubmit="GalleryUploadForms.handleSubmit(#{form_id})" target="upload-frame-#{form_id}" method="post" enctype="multipart/form-data" action="/admin/galleries/#{gallery_id}/items.js?form_id=#{form_id}">' +
+              '      <p class="title">' +
+              '		     <input type="file" size="18" name="gallery_item[uploaded_data]" id="gallery_item_uploaded_data" class="textbox"/>' +
+              '		     <input type="submit" value="Upload" class="button"/>' +
+              '      </p>' +
+              '      <iframe src="" style="display: none;" name="upload-frame-#{form_id}" id="upload-frame-#{form_id}"></iframe>' +
+              '	   </form>' +
+              '  </div>' +
+              '  <div style="display: none; text-align: center;" id="form-loading-#{form_id}" class="form-loading">' +
+              '    <img src="/images/admin/spinner.gif" />' +
+              '  </div>' +
+              '  <div style="display: none; text-align: center;" id="form-success-message-#{form_id}" class="form-loading">' +
+              '    File has been uploaded correctly. <a href="#" onclick="GalleryUploadForms.remove(#{form_id})">Close</a>' +
+              '  </div>' +
+              '  <div style="display: none; text-align: center;" id="form-error-message-#{form_id}" class="form-loading">' +
+              '    Problems uploading your file. <a href="#" onclick="$(\'form-error-message-#{form_id}\').hide();$(\'form-#{form_id}\').show();return false;">Retry &gt;&gt;</a>' +
+              '  </div>' +
+              '</div>',
+              
+    gallery_id: null,
+    
+    index: 0,
+    
+    count: 0,
+    
+    getGalleryId: function() {        
+      if(GalleryUploadForms.gallery_id == null) GalleryUploadForms.gallery_id = document.body.id;
+      return document.body.id;
+    },
+    
+    create: function() {
+      GalleryUploadForms.count++;
+      $('content').down('div.form-area').insert({
+        top: new Template(GalleryUploadForms.template).evaluate({
+          form_id: ++GalleryUploadForms.index,
+          gallery_id: GalleryUploadForms.getGalleryId()
+        })
+      });
+    },
+    
+    remove: function(id) {
+      $('form-container-' + id).remove();
+      if(--GalleryUploadForms.count < 1) GalleryUploadForms.create();
+    },
+    
+    handleSubmit: function(id) {
+      GalleryUploadForms.toggleForm(id);
+      GalleryUploadForms.create();
+    },
+    
+    toggleForm: function(id) {
+      [$('form-' + id), $('form-loading-' + id)].invoke('toggle');
+    },
+    
+    showSuccessMessage: function(id) {
+      $('form-loading-' + id).hide();
+      $('form-success-message-' + id).show();
+      GalleryUploadForms.fadeMessage.delay(1.5, id);
+    },
+    
+    fadeMessage: function(id) {
+      Effect.Fade($('form-container-' + id));
+    },
+    
+    showErrorMessage: function(id) {
+      $('form-loading-' + id).hide();
+      $('form-error-message-' + id).show();
+    }
+    
+  };
+  document.observe('dom:loaded', function() {
+    GalleryUploadForms.create();
+  }); 
+  
+  function closeWindow() {
+    if(window.opener.GalleryItemsPanel.instance.working) {
+      alert('Opener window is still working!')
+    } else {
+      window.close();
+    }
+  }
+</script>
+
+<div class="form-area">
+</div>

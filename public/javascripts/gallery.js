@@ -1,65 +1,3 @@
-var GalleryImporter = Class.create();
-GalleryImporter.prototype = {
-	initialize: function() {
-		this.options = arguments[0] || {};
-		this.files = new Array();		
-		this.index = -1;
-		GalleryImporter.instance = this;
-	},
-	
-	add: function(path, id) {
-		this.files.push({
-			path: path,
-			id: id 
-		});
-	},
-	
-	start: function() {  
-		
-		this.import_next();
-	},
-	
-	import_next: function() {
-		this.index++;
-		if(this.index < this.files.length && this.options.url) {
-			this.updateLog("Importing " + (this.index + 1) + " of " + this.files.length + " files...");
-			new Ajax.Request(
-		    this.options.url + '/' + this.options.gallery_id + '?file_path=' + this.files[this.index].path,
-		    {
-					evalScripts: true,
-					onLoading: function(request) {
-	          Element.show($('file-busy-' + this.files[this.index].id)); 					
-	        }.bind(this),
-	        onComplete: function(request) {
-	          Element.hide($('file-item-' + this.files[this.index].id));						
-						if(this.index + 1 < this.files.length) {
-							this.updateLog("<b>OK</b>", true);
-						} else {
-							this.updateLog("All files have been imported.");
-							Element.hide('import_button');
-						}
-	        }.bind(this)
-				}
-		  );
-		}
-	},
-	
-	next: function() {
-		window.setTimeout(this.import_next.bind(this), 500);
-	},
-	
-	updateLog: function(message, extend) {
-		if(this.options.log) {
-			if(extend) {
-				message = $(this.options.log).innerHTML + message;
-			}
-			$(this.options.log).innerHTML = message;
-		}
-	}
-	
-}
-
-
 var GalleryTreeItem = Class.create();
 GalleryTreeItem.prototype = { 	
 	
@@ -140,8 +78,9 @@ GalleryTreeItem.prototype = {
 	loadChildren: function(id, expander) {
 		new Ajax.Updater(
 	    this.row,
-	    this.options.url + '/' + this.id,
+	    '/admin/galleries/' + this.id + '/children/',
 	    {
+	      method: 'GET',
 	      insertion: Insertion.After,
 				evalScripts: true,
 				onLoading: function(request) {
@@ -161,9 +100,18 @@ GalleryTreeItem.prototype = {
 var GalleryTree = Class.create();
 GalleryTree.prototype = {
 	
-	initialize: function(options) {
+	initialize: function(element, options) {
+	  this.element = $(element);
 		this.options = arguments[0] || {};
 		this.items = {};
+		this.setup();
+	},
+	
+	setup: function() {  	  
+	  this.element.select('tr.node').each(function(element) {
+	    var id = element.id.match(/^gallery\-row\-(\d+)/)[1];
+	    this.createItem(id, null)
+	  }.bind(this));
 	},
 	
 	createItem: function(id, parent_id) {
@@ -173,204 +121,14 @@ GalleryTree.prototype = {
 			this.items[parent_id].appendChild(item);
 		}
 	}
-};   
-   
-
-var Gallery = {
-	
-	init: function() {
-		Gallery.sortable = new LiteSortable('list', {
-			overlap: 'horizontal',
-			constraint: 'horizontal',
-			handle: 'image',
-			tag: 'div',
-			only: 'item',
-			onUpdate: GalleryItems.sort
-		});
-	},
-	
-	toggle_by_upload_and_by_url: function() {
-    ['by-upload', 'by-url', 'open-by-upload', 'open-by-url'].each(function(id) {
-      Element.toggle(id);
-    });  
-  },		
-	
-	remove: function(id) {
-    var e = $('item_' + id);
-		if(e) {
-	    Effect.Puff(e, {
-				afterFinish: function() {
-					e.remove();
-					Gallery.sortable.remove(e);
-				}
-			});			
-		}    
-  }
-	
 };
-
-
-var GalleryItems = {
-	
-	set_name: function(item_id, name) {
-		var element = $('item_' + item_id + '_name');
-		if(element) {
-		  element.innerHTML = name;
-		}
-		var view_title = $('item_' + item_id + '_view_title')
-		if(view_title) {
-		  view_title.title = name;
-		}
-	},
-	
-	set_description: function(item_id, description) {
-		var element = $('item_' + item_id + '_description');
-		if(element) {
-		  element.innerHTML = description;
-		}
-	},
-	
-	delete_if_confirm: function (item_id, delete_url) {
-    if (confirm('Do you want to delete selected file?')) {
-      new Ajax.Request(delete_url,
-        {
-          evalScripts: true,
-					onLoading: function(request) {
-						$('item_delete_' + item_id).src = '/images/admin/spinner.gif';
-					}
-        }
-      );
-    }
-  },	
-
-	zoomIn: function() {
-		GalleryItems.scale(1.2);
-	}, 
-	
-	zoomOut: function() {
-		GalleryItems.scale(0.8);
-	},
-	
-	scale: function(percent) {
-		$('list').getElementsBySelector('div[class=image]').each(function(item) {
-			[item, item.down()].each(function(e) {
-				var w = parseFloat(e.getStyle('width'));
-			  var h = parseFloat(e.getStyle('height'));
-			  e.setStyle({width: w * percent + 'px', height: h * percent + 'px'});
-			});		  
-		})
-	},
-	
-	sort: function(list, element, id, old_position, new_position) {
-		new Effect.Highlight(element, {duration:  0.5})
-		new Ajax.Request('/admin/gallery_item/sort/', {
-			evalScripts:true,
-			parameters: {
-				id: id,
-				old_position: old_position,
-				new_position: new_position
-			}
-		});
-	}
-
-};
-
-
-
-var GalleryItemPopup = {		
-	
-	id: 'update-item-popup',
-	
-	saved: true,
-	
-	opened: false,
-	
-	open: function(item_id) {
-		if(GalleryItemPopup.opened) {
-			return;			
-		}
-		GalleryItemPopup.reset();
-		var hidden_field = $(GalleryItemPopup.id + '-id-field');
-		hidden_field.value = item_id;
-		var popup_name_field = $(GalleryItemPopup.id + '-name-field');
-		var popup_description_field = $(GalleryItemPopup.id + '-description-field');		
-		var name_field = $('item_' + item_id + '_name')
-		var description_field = $('item_' + item_id + '_description')
-		var name = name_field.innerHTML;
-		var description = description_field.innerHTML;
-		popup_name_field.value = name;
-		popup_description_field.value = description;
-		var popup = $(GalleryItemPopup.id);
-    GalleryItemPopup.center(popup);
-    Element.show($(GalleryItemPopup.id));
-    Field.focus(popup_name_field);
-		$(GalleryItemPopup.id + '-save-button').disabled = true;
-		GalleryItemPopup.observe(true);
-		GalleryItemPopup.opened = true;
-  },
-
-	reset: function() {
-		GalleryItemPopup.saved = true;		
-		GalleryItemPopup.reset_button();
-	},
-	
-	reset_button: function() {
-		$(GalleryItemPopup.id + '-save-button').disabled = true;
-		$(GalleryItemPopup.id + '-save-button').value = 'Save';
-	},
-
-	onStartEdit: function(event) {
-		if(event.keyCode == 13) return;				
-		GalleryItemPopup.saved = false;
-		$(GalleryItemPopup.id + '-save-button').disabled = false;
-		GalleryItemPopup.observe(false);
-	},
-	
-	observe: function(observe) {
-		var elements = [$(GalleryItemPopup.id + '-name-field'), $(GalleryItemPopup.id + '-description-field')];
-		if(observe) {
-			elements.each(function(element) {
-				Event.observe(element, 'keydown', GalleryItemPopup.onStartEdit);
-			});
-		} else {
-			elements.each(function(element) {
-				Event.stopObserving(element, 'keydown', GalleryItemPopup.onStartEdit);
-			});
-		}
-	}, 
-
-	center: function(element) {
-    var header = $('header');
-    var element = $(element);
-    element.style.position = 'fixed'
-    var dim = Element.getDimensions(element)
-    element.style.top = '100px';
-    element.style.left = ((header.offsetWidth - dim.width) / 2) + 'px';
-  },
-	
-	closeWithConfirmation: function() {
-		if(!GalleryItemPopup.saved) {
-			if(!confirm("Do you want to close without save?")) {
-				return false;
-			}						
-		}
-		GalleryItemPopup.close();
-		return true;
-	},
-	
-	close: function(confirmation) {
-		Element.hide($(GalleryItemPopup.id));
-		GalleryItemPopup.opened = false;
-	}
-		
-};
-
 
 var GalleryZoomSlider = Class.create({
 	
-	initialize: function(handle, track) {
+	initialize: function(handle, track, panel) {
 		this.handle = handle;
-		this.track = track;
+		this.track  = track;
+		this.panel  = panel;
 		this.setup();
 		this.readZoomCookie();
 	},
@@ -386,6 +144,12 @@ var GalleryZoomSlider = Class.create({
 		this.value = value;
 		this.saveZoomCookie();
 		this.zoom();
+		if(GalleryItemsPanel.instance) {
+		  GalleryItemsPanel.instance.lightwindow._getPageDimensions();
+		  $('lightwindow_overlay').setStyle({
+		    height: GalleryItemsPanel.instance.lightwindow.pageDimensions.height+'px'
+		  });
+		}
 	},
 	
 	onSlide: function(value) {
@@ -394,7 +158,7 @@ var GalleryZoomSlider = Class.create({
 	},
 	
 	zoom: function(perc) {
-	  Element.setContentZoom('list', 200 * this.value + 100);
+	  Element.setContentZoom(this.panel, 200 * this.value + 100);
 	},
 	
 	readZoomCookie: function() {
@@ -409,9 +173,200 @@ var GalleryZoomSlider = Class.create({
 	
 });
 
-GalleryZoomSlider.init = function() { new GalleryZoomSlider('handle', 'track'); }
+var GalleryItem = Class.create({
+  initialize: function(element, panel) {
+    this.element = element;
+    this.panel = panel;
+    this.selected = false;
+    this.setup();    
+  },
+  
+  setup: function() {
+    this.setupButtons();
+    // this.element.observe('click', this.handleSelection.bind(this));
+  },
+  
+  handleSelection: function(event) {
+    event.stop();
+    this.panel.selectItem(this, event)
+  },
+  
+  select: function() {
+    this.element.addClassName('selected');
+    this.selected = true;
+  },
+  
+  deselect: function() {
+    this.element.removeClassName('selected');
+    this.selected = false;
+  },
+  
+  setupButtons: function() {
+    this.setupDeleteButton();
+  },
+  
+  setupDeleteButton: function() {
+    this.delete_button = this.element.down('div.buttons a.delete_button');
+    this.delete_button.removeAttribute('onclick');
+    this.delete_button.observe('click', this.handleDeleteButton.bind(this));
+  },
+  
+  handleDeleteButton: function(event) {
+    event.stop();
+    if (confirm('Do you want to delete selected file?')) {
+      var url = this.delete_button.getAttribute('href');
+      new Ajax.Request(url, {
+        method: 'delete',
+        onLoading: function(request) {
+          var img = event.element();
+          img.setAttribute('src', '/images/admin/spinner.gif');
+          this.panel.sortable.remove(img.up('div.item'));
+        }.bind(this)
+      });
+    }
+  }
+});
+
+var GalleryItemsPanel = Class.create({
+  initialize: function(element) {
+    this.element    = $(element);
+    this.list_panel = this.element.down('div.items');
+		this.gallery_id = this.list_panel.id;
+    this.loadItems();
+    this.selectedItems = new Array();
+    this.working = false;
+    this.setup();
+  },      
+  
+  setup: function() {
+    // this.element.observe('mousedown', this.handleClick.bind(this));
+  },
+
+  handleClick: function(event) {
+    this.deselectAllElements();
+  },
+  
+  deselectAllElements: function() {
+    this.selectedItems.each(function(item) {
+      item.deselect();        
+    });
+    this.selectedItems = new Array();
+  },
+  
+  selectItem: function(item, event) {
+    if(this.selectedItems.indexOf(item) < 0) {
+      if(!event.shiftKey) this.deselectAllElements();       
+      this.selectedItems.push(item);
+      item.select();
+    }
+  },
+  
+  loadItems: function() {
+    new Ajax.Updater(this.list_panel, '/admin/galleries/' + this.gallery_id + '/items/', {
+      method: 'GET',
+      onLoading: function() {
+        this.working = true;
+        this.element.down('div.loading').show();
+      }.bind(this),
+      onComplete: function() {        
+        this.working = false;
+        this.element.down('div.loading').hide();        
+        this.setupSortable();
+        this.setupItems();
+        this.lightwindow = new lightwindow();
+      }.bind(this)
+    });
+  }, 
+  
+  reloadItems: function() {
+    // FIXME
+    this.loadItems();
+  },
+  
+  loadItem: function(id) {
+    new Ajax.Updater(this.list_panel, '/admin/galleries/' + this.gallery_id + '/items/' + id, {
+      method: 'GET',
+      insertion: 'bottom',
+      onLoading: function() {
+        this.working = true;
+        this.element.down('div.loading').show();
+      }.bind(this),
+      onComplete: function(r) {
+        this.working = false;
+        this.element.down('div.loading').hide();
+        this.setupSortable();
+        var item = $('item_' + id);
+        item.select('a.lightwindow').each(function(link) {
+          this.lightwindow._processLink(link);
+        }.bind(this));
+        this.setupItem(item);
+      }.bind(this)
+    });
+  },
+  
+  setupItems: function() {    
+    this.element.select('div.item').each(function(element) {
+      this.setupItem(element)
+    }.bind(this));    
+  },
+  
+  setupItem: function(element) {
+    new GalleryItem(element, this);
+  },
+  
+  setupSortable: function() {
+    this.sortable = new LiteSortable(this.list_panel, {
+			overlap: 'horizontal',
+			constraint: 'horizontal',
+			handle: 'image',
+			tag: 'div',
+			only: 'item',
+      onUpdate: this.sort.bind(this)
+		});
+  },
+  
+  removeItem: function(id) {
+    var e = $('item_' + id);
+		if(e) {
+	    Effect.Puff(e, {
+				afterFinish: function() {
+					e.remove();
+				}.bind(this)
+			});			
+		}
+  },
+  
+  sort: function(list, element, id, old_position, new_position) {
+		new Effect.Highlight(element, {duration:  0.5})
+		new Ajax.Request('/admin/galleries/' + this.gallery_id + '/items/' + id + '/move' , {
+		  method: 'PUT',
+			parameters: {
+				id: id,
+				old_position: old_position,
+				new_position: new_position
+			}
+		});
+	}
+});              
+
+var Gallery = {};
+Gallery.openPopup = function(url, name) {
+  var width = 500;
+  var height = 500;
+  var left = window.innerWidth / 2 - width / 2;
+  var top  = window.innerHeight / 2 - height / 2;
+  window.open(url, name, 'left=' + left + ',top=' + top + ',width=' + width + ',height=' + height + ',resizable=yes,scrollbars=yes');
+}
+
+GalleryZoomSlider.init  = function() { new GalleryZoomSlider('handle', 'track', 'gallery_items_panel'); }
+GalleryItemsPanel.init  = function() {   
+  Event.stopObserving(window, 'load', lightwindowInit, false);
+  GalleryItemsPanel.instance = new GalleryItemsPanel('gallery_items_panel');
+}
+GalleryTree.init        = function() { GalleryTree.instance       = new GalleryTree('gallery_tree'); }
 
 document.observe('dom:loaded', function() {
-	when('slider', GalleryZoomSlider.init);
-	when('list', Gallery.init);
+	when('gallery_items_panel_zoom',  GalleryZoomSlider.init);
+	when('gallery_items_panel',       GalleryItemsPanel.init);
+	when('gallery_tree',              GalleryTree.init);
 });

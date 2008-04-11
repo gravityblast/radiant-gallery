@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>New file</title>
+	<%= javascript_include_tag 'prototype' %>
+	<%= javascript_include_tag 'effects' %>
+	
+	<style type="text/css" media="screen">
+    body { font-family: "Lucida Grande","Bitstream Vera Sans",Helvetica,Verdana,Arial,sans-serif; margin: 0; }
+    #header, #footer, #content { padding: 20px 10px;}
+    #header { background: #CC0000; color: #FFF;}
+    #header h1 { margin: 0; }    
+    #navigation {
+      border-bottom:2px solid #CC0000;
+      font-size:90%;
+      line-height:100%;
+      margin-bottom:-20px;
+      margin-top:-5px;
+      padding:0.6em 20px 0.5em 0.5em;
+      text-align:right;
+    }
+    #navigation a, #navigation a:visited {
+      background-color: #eae3c5;
+      color: black;
+      display: inline;
+      padding: .5em;
+      padding-left: .9em;
+      padding-right: .9em;
+      text-decoration: none;
+    }
+    #navigation a:hover, #navigation a:visited:hover {
+      text-decoration: underline;
+    }
+    #navigation strong a, #navigation strong a:visited {
+      background-color: white;
+    }
+    #navigation .separator {
+      display: none;
+    }
+
+    
+    div.form-area div.form-container { background: #F5F1E2; padding: 10px 5px; border: 5px solid #EFEAD3; margin: 10px 0; }
+    input { font-size: 120%; }
+	</style>
+</head>
+<body id="<%= @gallery.id %>">
+  <div id="container">
+    <div id="header">
+      <h1>New file</h1>
+      <div id="navigation">
+        <%= gallery_popup_tab_link_to 'GalleryItems', 'New File', new_admin_gallery_item_path(@gallery) %>
+        <span class="separator"> | </span>
+        <%= gallery_popup_tab_link_to 'GalleryImportings', 'Import Files', new_admin_gallery_importing_path(@gallery) %>
+      </div>
+    </div>
+    <div id="content">      
+      <%= yield %>
+    </div>
+    <div id="footer">
+    </div>
+  </div>
+</body>
+</html>

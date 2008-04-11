@@ -1,0 +1,2 @@
+page.call "GalleryImporter.instance.next"
+page.call "GalleryImporter.instance.debug", "#{File.basename(@importing.path)} imported", "true"

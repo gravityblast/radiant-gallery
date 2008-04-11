@@ -1,7 +1,7 @@
 class Gallery < ActiveRecord::Base
   
-  acts_as_tree :counter_cache => :children_count
-           
+  acts_as_tree :counter_cache => :children_count             
+  
   # TODO: add :order => :position
   has_many :items, :class_name => 'GalleryItem', :order => "gallery_items.position", :dependent => :destroy,
     :conditions => "gallery_items.parent_id IS NULL"
@@ -14,6 +14,8 @@ class Gallery < ActiveRecord::Base
   
   has_many :thumbnails, :class_name => 'GalleryItem',
     :conditions => "gallery_items.parent_id IS NOT NULL"
+  
+  has_many :importings, :class_name => 'GalleryImporting'
     
   belongs_to :created_by, :class_name => 'User', :foreign_key => 'created_by'
   belongs_to :update_by, :class_name => 'User', :foreign_key => 'update_by'

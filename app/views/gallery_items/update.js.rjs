@@ -1,0 +1,4 @@
+page["item_#{@item.id}_name"].down('a').update(@item.name)
+page["popup_save_button"].value = 'Save'
+page["popup_save_button"].disabled = false
+page.call 'GalleryItemsPanel.instance.lightwindow.deactivate'

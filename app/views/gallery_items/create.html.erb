@@ -1,0 +1,16 @@
+<html>
+  <head>
+    <script type="text/javascript" charset="utf-8">
+      with(window.parent) {
+        <% if @created -%>
+          GalleryUploadForms.showSuccessMessage(<%= params[:form_id] %>);
+          opener.GalleryItemsPanel.instance.loadItem(<%= @item.id %>);
+        <% else -%>
+          GalleryUploadForms.showErrorMessage(<%= params[:form_id] %>);
+        <% end -%>
+      }
+    </script>
+  </head>
+<body>  
+</body>
+</html>

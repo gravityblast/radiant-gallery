@@ -1,0 +1,93 @@
+<script type="text/javascript" charset="utf-8">
+  
+  var GalleryImporter = Class.create({
+    
+    initialize: function() {
+      this.files = new Array();
+      this.progress_bar = $('progress_bar');
+      this.progress_bar_label = $('progress_bar_label');
+      this.finish_message = $('finish_message');
+      this.debug_container = $('debug-container');
+      this.debug_area = $('debug');
+      this.gallery_id = document.body.id;
+    },
+    
+    add: function(id) {
+      this.files.push(id);
+    },
+    
+    start: function() {
+      this.update(0);
+      this.step = 100 / this.files.length;
+      this.debug_container.show();
+      this.debug('Starting...');
+      this.import_next();
+    },
+    
+    next: function() {
+      this.import_next.bind(this).delay(0.2);
+    },
+    
+    import_next: function() {
+      if(this.files.length > 0) {                
+        new Ajax.Request('/admin/galleries/' + this.gallery_id + '/importings/' + this.files.shift() + '/import', {
+          method: 'put', 
+          onComplete: function() {
+            var progress_perc = parseFloat(this.progress_bar.getStyle('width')) + this.step;
+            progress_perc = progress_perc > 100 ? 100 : Math.round(progress_perc);
+            this.update(progress_perc);
+          }.bind(this)
+        });
+      } else {
+        this.update(100);
+        window.opener.GalleryItemsPanel.instance.reloadItems();
+      }
+    },
+    
+    update: function(perc) {
+      if(perc < 100) {
+        this.progress_bar.setStyle({ width: perc + '%' });
+        this.progress_bar_label.update(perc + '%');
+      } else {
+        this.progress_bar_label.hide();
+        this.progress_bar.hide();
+        this.finish_message.show();
+      }
+    },
+    
+    debug: function(message, append) {
+      append ? this.debug_area.insert('<div>' + message + '</div>') : this.debug_area.update(message);
+    }
+        
+  });   
+</script>
+
+
+
+<% if @importings.size > 0 -%>  
+  <div style="background: 0;border: 2px solid #F5F1E2; width: 100%; height: 30px; position: relative;">    
+    <div id="progress_bar_label" style="position: absolute; left: 0; top: 0; height: 100%; width: 100%; line-height: 30px; text-align: center;">
+      <%= @importings.size %> <%= pluralize @importings.size, 'file' %> to import. 
+      <input type="button" value="START IMPORTING" onclick="importer.start();" />
+    </div>
+    <div id="progress_bar" style="width: 0%; background: #F5F1E2; height: 100%;">
+    </div>
+    <div id="finish_message" style="display: none; line-height: 30px; text-align: center;">
+      Finish importing. <%= link_to 'Import other files', new_admin_gallery_importing_path %>
+    </div>    
+  </div>
+  <div id="debug-container" style="display: none;">
+    <p><a href="#" onclick="$('debug').toggle(); return false">Output >></a></p>
+    <div id="debug" style="display: none;"></div>
+  </div>
+<% else -%>
+  No files to import. <%= link_to 'Start importing', new_admin_gallery_importing_path(@gallery) %>
+<% end -%>
+
+<script type="text/javascript" charset="utf-8">
+  var importer = new GalleryImporter();
+  GalleryImporter.instance = importer;
+  <% @importings.each do |importing| -%>
+    importer.add(<%= importing.id %>);
+  <% end -%>  
+</script>

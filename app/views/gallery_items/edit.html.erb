@@ -1,0 +1,17 @@
+<div id="popups">
+  <div class="popup" id="update-item-popup">
+    <h3>Edit info</h3>
+    <% remote_form_for(@item, :url => admin_gallery_item_path(@gallery, @item), :method => 'put', 
+        :loading => "var b = $('popup_save_button'); b.setAttribute('originalValue', b.getAttribute('value')); b.setAttribute('value', 'Saving...'); b.setAttribute('disabled', true);"
+    ) do |f| -%>
+    <div>
+    	<input type="hidden" id="update-item-popup-id-field" name="id" value="" />
+    	<label for="update-item-popup-name-field">Name:</label> <br />
+      <%= f.text_field :name, :maxlength => 255 %> <br />
+    	<label for="update-item-popup-description-field">Description:</label> <br />
+    	<%= f.text_area :description %><br />
+      <%= submit_tag "Save", :id => 'popup_save_button' %> 
+    </div>
+    <% end %>
+  </div>
+</div>

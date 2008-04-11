@@ -1,6 +1,6 @@
 class GalleryItemController < ApplicationController
-  
-  before_filter :find_item, :except => [:create, :sort]
+    
+  before_filter :find_item, :except => [ :create, :sort ]
   
   def create
     @gallery = Gallery.find(params[:gallery_id])

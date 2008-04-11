@@ -12,28 +12,18 @@ class GalleryExtension < Radiant::Extension
   url "http://gravityblast.com/projects/radiant-gallery/"
   
   define_routes do |map|
-    map.with_options(:controller => 'gallery') do |gallery|
-      gallery.gallery_index           'admin/gallery',                            :action => 'index'
-      gallery.gallery_new             'admin/gallery/new',                        :action => 'new'
-      gallery.gallery_new_child       'admin/gallery/:parent_id/new',             :action => 'new'
-      gallery.gallery_create          'admin/gallery/create',                     :action => 'create'
-      gallery.gallery_create_child    'admin/gallery/:parent_id/create',          :action => 'create'
-      gallery.gallery_edit            'admin/gallery/edit/:id',                   :action => 'edit'      
-      gallery.gallery_update          'admin/gallery/update/:id',                 :action => 'update'
-      gallery.gallery_show            'admin/gallery/show/:id',                   :action => 'show'
-      gallery.gallery_destroy         'admin/gallery/destroy/:id',                :action => 'destroy'
-      gallery.gallery_children        'admin/gallery/children/:id',               :action => 'children'      
-      gallery.gallery_retrieve_file   'admin/gallery/retrieve_file',              :action => 'retrieve_file'      
-      gallery.gallery_clear_thumbs    'admin/gallery/clear_thumbs/:id',           :action => 'clear_thumbs'      
-      gallery.gallery_import          'admin/gallery/import/:id',                 :action => 'import'
-    end
-    map.with_options(:controller => 'gallery_item') do |gallery_item|
-      gallery_item.gallery_item_create      'admin/gallery_item/create',          :action => 'create'
-      gallery_item.gallery_item_edit        'admin/gallery_item/:id/edit',        :action => 'edit'
-      gallery_item.gallery_item_update      'admin/gallery_item/update/:id',      :action => 'update'
-      gallery_item.gallery_item_destroy     'admin/gallery_item/:id/destroy',     :action => 'destroy'
-      gallery_item.gallery_item_sort        'admin/gallery_item/sort',            :action => 'sort'            
-    end
+    # FIME: it doesn't work with namespace admin and without :name_prefix and path_prefix (only on production). :(
+    #map.namespace(:admin) do |admin|
+      map.resources :galleries,
+        :name_prefix =>'admin_',
+        :path_prefix => 'admin',
+        :member     => { :clear_thumbs => :get },
+        :collection => { :children => :get } do |galleries|
+          galleries.resources :children,    :controller => 'galleries', :path_prefix => '/admin/galleries/:parent_id'
+          galleries.resources :items,       :controller => 'gallery_items', :member => { :move => :put }
+          galleries.resources :importings,  :controller => 'gallery_importings', :member => { :import => :put }
+      end  
+    #end
   end
   
   def activate    
@@ -41,8 +31,12 @@ class GalleryExtension < Radiant::Extension
     init
     tab_options = {:visibility => [:all]}
     Radiant::Config["gallery.gallery_based"] == 'true' ? tab_options[:before] = "Pages" : tab_options[:after] = "Layouts"
-    admin.tabs.add("Galleries", "/admin/gallery", tab_options)
+    admin.tabs.add("Galleries", "/admin/galleries", tab_options)
     admin.page.edit.add :layout_row, 'base_gallery' if defined?(Shards)
+  end
+  
+  def deactivate
+    admin.tabs.remove "Galleries"
   end
   
   def init_attachment_fu
@@ -56,11 +50,7 @@ class GalleryExtension < Radiant::Extension
     ActiveRecord::Base.send(:extend, Technoweenie::AttachmentFu::ActMethods)
     Technoweenie::AttachmentFu.tempfile_path = ATTACHMENT_FU_TEMPFILE_PATH if Object.const_defined?(:ATTACHMENT_FU_TEMPFILE_PATH)
     FileUtils.mkdir_p Technoweenie::AttachmentFu.tempfile_path
-  end
-  
-  def deactivate
-    admin.tabs.remove "Galleries"
-  end
+  end    
   
   def init
     Page.send(:include, GalleryTags, GalleryItemTags, GalleryItemInfoTags, GalleryLightboxTags)
