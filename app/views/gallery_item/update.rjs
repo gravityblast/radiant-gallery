@@ -1,4 +1,0 @@
-page.call "GalleryItems.set_name", @item.id, @item.name
-page.call "GalleryItems.set_description", @item.id, @item.description
-page.call "GalleryItemPopup.close"
-page.call "GalleryItemPopup.reset_button"

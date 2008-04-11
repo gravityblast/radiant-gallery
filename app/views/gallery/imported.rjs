@@ -1,5 +1,0 @@
-if @imported
-  page.call "GalleryImporter.instance.next"
-else
-  page.call "alert", "Error importing '#{params[:path]}'"
-end

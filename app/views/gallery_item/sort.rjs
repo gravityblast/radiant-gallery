@@ -1,3 +1,0 @@
-if @error
-  page.alert "Error: maybe the selected item has been deleted or moved by someone else!"
-end
