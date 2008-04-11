@@ -1,12 +1,10 @@
 <% include_javascript 'dragdrop' %>
 <% include_javascript 'slider' %>
-<% include_javascript 'lightbox' %>
-<% include_javascript 'lightwindow' %>
-<% include_javascript 'lite_sortable'%>
-<% include_stylesheet 'lightbox/lightbox' -%>
-<% include_stylesheet 'lightwindow/lightwindow' -%>
-<% include_javascript 'gallery'%>
-<% include_stylesheet 'admin/gallery/gallery' -%>
+<% include_javascript 'extensions/gallery/lightwindow' %>
+<% include_javascript 'extensions/gallery/lite_sortable'%>
+<% include_stylesheet 'extensions/gallery/lightwindow/lightwindow' %>
+<% include_javascript 'extensions/gallery/admin/gallery' %>
+<% include_stylesheet 'extensions/gallery/admin/gallery' %>
 
 <h1 id="show_gallery"><%= @gallery.name %></h1>
 <% if flash[:gallery_external_html] -%>

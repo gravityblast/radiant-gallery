@@ -65,7 +65,8 @@ private
     item.attributes = { :gallery_id => gallery.id, :temp_path => temp_path, :filename => File.basename(temp_path),
       :content_type => GalleryItem::KnownExtensions[File.extname(temp_path).gsub(/^\./, '')][:content_type] }    
     item.save
-    #FileUtils.rm(temp_path)
+    puts "-------- removing #{temp_path}"
+    FileUtils.rm(temp_path)
     if item.thumbnailable?
       [300, 500].each{|size| item.thumb(:width => size, :height => size, :prefix => 'admin')}
     end
