@@ -68,7 +68,7 @@ module GalleryTags
     gallery = find_gallery(tag)
     options = {}
     options[:conditions] = {:hidden => false, :external => false}
-    by = tag.attr['by'] ? tag.attr['by'] : "id"
+    by = tag.attr['by'] ? tag.attr['by'] : "position"
     unless Gallery.columns.find{|c| c.name == by }
       raise GalleryTagError.new("`by' attribute of `each' tag must be set to a valid field name")
     end
@@ -172,6 +172,6 @@ protected
     elsif @current_gallery
       @current_gallery
     end
-  end    
+  end
   
 end

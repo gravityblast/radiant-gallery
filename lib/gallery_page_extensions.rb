@@ -60,7 +60,7 @@ module GalleryPageExtensions
       options[:conditions][:children_count] = 0
     end
 
-    by = tag.attr['by'] ? tag.attr['by'] : "id"
+    by = tag.attr['by'] ? tag.attr['by'] : "position"
     unless Gallery.columns.find{|c| c.name == by }
       raise GalleryTagError.new("`by' attribute of `each' tag must be set to a valid field name")
     end
