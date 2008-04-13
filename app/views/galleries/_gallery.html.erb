@@ -7,7 +7,7 @@ children_class = children ? ' children-visible' : ' no-children'
 expanded = false
 expander = children ? image((expanded ? "collapse" : "expand"), :class => "expander", :alt => 'toggle children', :title => '', :align => 'center', :id => "gallery-expander-#{gallery.id}") : ""
 name = %{<span class="name">#{ gallery.name }</span>}
-icon = image('gallery/gallery', :class => "icon", :alt => 'gallery-icon', :title => '', :align => 'center')
+icon = image('extensions/gallery/gallery', :class => "icon", :alt => 'gallery-icon', :title => '', :align => 'center')
 spinner = image('spinner.gif', :class => 'busy', :id => "gallery-busy-#{gallery.id}", :alt => "", :title => "", :align => "center", :style => 'display: none;')
 -%>
 

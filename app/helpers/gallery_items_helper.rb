@@ -19,9 +19,9 @@ module GalleryItemsHelper
     content = ''
     if item.image?
       #content << link_to(image('gallery/show.png'), item.thumb(:width => 500, :height => 500, :prefix => :admin).public_filename, :rel => "lightbox[#{@gallery.name}]", :title => 'Show', :id => "item_#{item.id}_view_title" )
-      content << link_to(image('gallery/show.png'), item.thumb(:width => 500, :height => 500, :prefix => :admin).public_filename, :class => 'lightwindow', :rel => "Gallery [#{item.gallery.name}]", :title => item.name)
+      content << link_to(image('extensions/gallery/show.png'), item.thumb(:width => 500, :height => 500, :prefix => :admin).public_filename, :class => 'lightwindow', :rel => "Gallery [#{item.gallery.name}]", :title => item.name)
     else
-      content << link_to(image('gallery/show.png'), item.public_filename, :title => item.name)
+      content << link_to(image('extensions/gallery/show.png'), item.public_filename, :title => item.name)
     end
   end
   
@@ -35,7 +35,7 @@ module GalleryItemsHelper
   end
   
   def item_destroy_button(item)
-    link_to image('gallery/destroy.png'), admin_gallery_item_url(@gallery, item),
+    link_to image('extensions/gallery/destroy.png'), admin_gallery_item_url(@gallery, item),
         :class => "delete_button",
         :title => 'Destroy',
         :method => 'delete',        
@@ -43,7 +43,7 @@ module GalleryItemsHelper
   end
   
   def item_edit_button(item)
-    link_to(image('gallery/edit.png'), formatted_edit_admin_gallery_item_path(@gallery, item, :html), :class => 'lightwindow', :params => 'lightwindow_width=800,lightwindow_height=350')
+    link_to(image('extensions/gallery/edit.png'), formatted_edit_admin_gallery_item_path(@gallery, item, :html), :class => 'lightwindow', :params => 'lightwindow_width=800,lightwindow_height=350')
   end
   
   def item_preview(item)
@@ -56,7 +56,7 @@ module GalleryItemsHelper
     else
       width_perc, height_perc = proportional_resize(100, 100, 100, 100)
       margin_top = (100 - height_perc) / 2
-      content << "<img style=\"margin-top: #{margin_top}%\" src=\"/images/admin/gallery/file.png\" width=\"#{width_perc}%\" height=\"#{height_perc}%\" />"
+      content << "<img style=\"margin-top: #{margin_top}%\" src=\"/images/admin/extensions/gallery/file.png\" width=\"#{width_perc}%\" height=\"#{height_perc}%\" />"
     end
     content << "</div>"
   end    
