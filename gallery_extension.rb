@@ -17,8 +17,16 @@ class GalleryExtension < Radiant::Extension
       map.resources :galleries,
         :name_prefix =>'admin_',
         :path_prefix => 'admin',
-        :member     => { :clear_thumbs => :get },
-        :collection => { :children => :get } do |galleries|
+        :member     => {
+          :clear_thumbs => :get,
+          :reorder => :get, 
+          :update_order => :post
+        },
+        :collection => { 
+          :children => :get,
+          :reorder => :get, 
+          :update_order => :post 
+        } do |galleries|
           galleries.resources :children,    :controller => 'galleries', :path_prefix => '/admin/galleries/:parent_id'
           galleries.resources :items,       :controller => 'gallery_items', :member => { :move => :put }
           galleries.resources :importings,  :controller => 'gallery_importings', :member => { :import => :put }

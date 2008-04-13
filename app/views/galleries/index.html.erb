@@ -9,7 +9,7 @@
 			<th class="gallery">Name</th>
       <th>ID</th>
 			<th class="status">Status</th>
-      <th class="modify" colspan="2">Actions</th>
+      <th class="modify" colspan="3">Actions</th>
     </tr>
   </thead>
   <tbody id="galleries_list">
@@ -24,4 +24,5 @@
 </table>
 <p>
   <%= link_to image('extensions/gallery/new-gallery.png', :alt => 'New Gallery'), new_admin_gallery_path %>
+  <%= link_to image('extensions/gallery/reorder.png', :alt => 'Reorder Gallery'), reorder_admin_galleries_path if @galleries.size > 1 %>
 </p>

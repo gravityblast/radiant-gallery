@@ -1,10 +1,10 @@
 class GalleriesController < ApplicationController
   helper :gallery_items
-  before_filter :find_gallery, :except => [:index, :list, :new, :create]
+  before_filter :find_gallery, :except => [:index, :list, :new, :create, :reorder, :update_order]
   
   def index
     conditions = params.include?(:parent_id) ? ["parent_id = ?", params[:parent_id]] : "parent_id IS NULL"
-    @galleries = Gallery.find(:all, :conditions => conditions )
+    @galleries = Gallery.find(:all, :conditions => conditions, :order => 'position')
     
     respond_to do |format|
       format.html { render :layout => !params.include?(:parent_id), :action => params.include?(:parent_id) ? 'children' : 'index' }
@@ -74,23 +74,23 @@ class GalleriesController < ApplicationController
     end
   end
   
-  def retrieve_file
-    @file_url = params[:file_url]
-    uri = URI.parse(@file_url)
-    raise "You can specify only HTTP and FTP url using file url mode." unless uri.is_a?(URI::HTTP) || uri.is_a?(URI::FTP)
-    temp_file_path = File.join(Technoweenie::AttachmentFu.tempfile_path, File.basename(@file_url.gsub(/\?.*$/, '')))
-    open(@file_url) do |remote_file|      
-      File.open(temp_file_path, 'w') do |file|
-        file.write(remote_file.read)
-      end                  
-    end
-    create_item(@gallery, temp_file_path)
-    flash[:notice] = "Your file has been saved below."    
-  rescue Exception => e
-    flash[:error] = "I had troubles retrieving your file :( -  #{e}"    
-  ensure
-    redirect_to gallery_show_url(:id => @gallery)
-  end    
+  # def retrieve_file
+  #     @file_url = params[:file_url]
+  #     uri = URI.parse(@file_url)
+  #     raise "You can specify only HTTP and FTP url using file url mode." unless uri.is_a?(URI::HTTP) || uri.is_a?(URI::FTP)
+  #     temp_file_path = File.join(Technoweenie::AttachmentFu.tempfile_path, File.basename(@file_url.gsub(/\?.*$/, '')))
+  #     open(@file_url) do |remote_file|      
+  #       File.open(temp_file_path, 'w') do |file|
+  #         file.write(remote_file.read)
+  #       end                  
+  #     end
+  #     create_item(@gallery, temp_file_path)
+  #     flash[:notice] = "Your file has been saved below."    
+  #   rescue Exception => e
+  #     flash[:error] = "I had troubles retrieving your file :( -  #{e}"    
+  #   ensure
+  #     redirect_to gallery_show_url(:id => @gallery)
+  #   end    
 
   def clear_thumbs
     @gallery.clear_thumbs
@@ -100,28 +100,26 @@ class GalleriesController < ApplicationController
       format.html { redirect_to admin_gallery_url(@gallery) }
       format.xml  { head :ok }
     end
-  end    
+  end 
   
-  def import
-    @folders = import_folders    
-    if request.post? && params[:file_path]
-      path = File.expand_path(File.join(galleries_absolute_path, params[:file_path]))     
-      if path =~ /^#{import_path}/ and File.exists?(path)
-        create_item(@gallery, path)
-        @imported = true
+  def reorder    
+    conditions = params.include?(:id) ? ["parent_id = ?", params[:id]] : "parent_id IS NULL"
+    @galleries = Gallery.find(:all, :conditions => conditions, :order => 'position')
+  end
+  
+  def update_order
+    if request.post? && params.key?(:sort_order)
+      list = params[:sort_order].split(',')
+      list.size.times do |i|
+        gallery = Gallery.find(list[i])
+        gallery.position = i + 1
+        gallery.save
       end
-      render(:action => 'imported')
-    elsif request.post?
-      @files = []
-      @selected_path = File.expand_path(File.join(galleries_absolute_path, params[:path]))
-      if @selected_path =~ /^#{import_path}/
-        @files = Dir[File.join(@selected_path, '**', '*')].find_all{|file| file if File.file?(file)}
-        @files.collect!{|file| file.gsub(/^#{galleries_absolute_path}/, '')}.sort!
-        render(:action => 'import_files')
-      end
-    end
-  end        
-    
+      redirect_to admin_galleries_url
+    end    
+  end
+     
+   
 private  
   
   def find_gallery

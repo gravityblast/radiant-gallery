@@ -1,8 +1,7 @@
 class Gallery < ActiveRecord::Base
   
-  acts_as_tree :counter_cache => :children_count             
+  acts_as_tree :counter_cache => :children_count, :order => 'position'
   
-  # TODO: add :order => :position
   has_many :items, :class_name => 'GalleryItem', :order => "gallery_items.position", :dependent => :destroy,
     :conditions => "gallery_items.parent_id IS NULL"
     
