@@ -17,9 +17,11 @@ Radiant-Gallery is a RadiantCMS extension that allows to manage galleries of ima
   
 == Installation
 
-  After installing radiant check out the radiant-gallery extension under vendor/extensions
-  
-    git clone git://github.com/pilu/radiant-gallery.git
+  After installing radiant check out the radiant-gallery extension under the vendor/extensions folder:
+    
+    cd vendor/extensions
+    
+    git clone git://github.com/pilu/radiant-gallery.git gallery
   
   Then install it with the following rake task:
   
