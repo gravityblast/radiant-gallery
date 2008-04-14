@@ -1,0 +1,57 @@
+<% include_javascript 'dragdrop.js' %>
+<% content_for :page_css do %>
+.page {
+  font-size: 120%;
+  font-weight: bold;
+  position: relative;
+  padding: 10px;
+  padding-left: 30px;
+  border-top: 1px solid #eaeaea;
+}
+.page .icon {
+  position: absolute;
+  margin-top: -7px;
+  left: 0px;
+}
+ul.pages,
+ul.pages li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  cursor: move;
+}
+ul.pages {
+  border-bottom: 1px solid #eaeaea;
+}
+ul.pages li {
+  font-size: 105%;
+  font-weight: normal;
+}
+ul.page .icon,
+ul.pages .icon {
+  position: absolute;
+  margin-top: -7px;
+  left: 22px;
+}
+<% end %>
+
+<h1 id="reorder_pages">Reorder Galleries</h1>
+
+<p>Drag and drop galleries to reorder. Click <strong>Finished</strong> when you are done.</p> 
+
+<ul id="children" class="pages">
+<% for child in @galleries -%>
+  <li id="item_<%= child.id %>" class="page"><%= image('extensions/gallery/gallery.png') %> <%= child.name %></li>
+<% end -%>
+</ul>
+
+<script type="text/javascript">
+//<![CDATA[
+Sortable.create("children", { onUpdate:function(){ $('sort_order').value = Sortable.sequence('children').join(',') } });
+//]]>
+</script>
+
+<% form_tag update_order_admin_galleries_path do %>
+  <p class="buttons"><%= submit_tag "Finished", :class => 'button' %> or <%= link_to 'Cancel', admin_galleries_path %></p>
+  <div><%= hidden_field_tag "sort_order" %></div>
+<% end %>
