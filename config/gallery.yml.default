@@ -1,3 +1,6 @@
 path_prefix: public/galleries
 processor: rmagick
 gallery_based: no
+default_thumbnails:
+  admin_thumb: 300x300   # do not remove
+  admin_preview: 500x500 # do not remove

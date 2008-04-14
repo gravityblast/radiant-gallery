@@ -1,4 +1,4 @@
-class GalleryItem < ActiveRecord::Base  
+class GalleryItem < ActiveRecord::Base    
   
   class KnownExtensions
     @@extensions = {}
@@ -10,11 +10,11 @@ class GalleryItem < ActiveRecord::Base
         @@extensions[extension.downcase] || 'Unknown'
       end
     end
-  end
+  end      
   
   has_attachment :storage => :file_system,
     :path_prefix => Radiant::Config["gallery.path_prefix"],
-    :processor => Radiant::Config["gallery.processor"]
+    :processor => Radiant::Config["gallery.processor"]      
   
   belongs_to :gallery
   
@@ -28,6 +28,10 @@ class GalleryItem < ActiveRecord::Base
   before_create :set_extension
 
   before_destroy :update_positions
+  
+  after_attachment_saved do |item|
+    item.generate_default_thumbnails if item.parent_id.nil?
+  end
      
   def jpeg?
     not (self.content_type =~ /jpeg/).nil?
@@ -74,7 +78,20 @@ class GalleryItem < ActiveRecord::Base
   def last?
     self.position ==  self.gallery.items.count
   end
-    
+  
+  def generate_default_thumbnails
+    logger.debug "Generating default thumbnails..."
+    default_thumbnails = Radiant::Config['gallery.default_thumbnails']
+    if self.thumbnailable? and default_thumbnails
+      default_thumbnails.split(',').each do |default_thumbnail|
+        if default_thumbnail =~ /^(\w+)=(\d+)x(\d+)$/
+          prefix, width, height = $1, $2, $3
+          self.thumb(:width => width, :height => height, :prefix => prefix)
+        end
+      end
+    end
+  end  
+  
 protected    
 
   def set_filename_as_name

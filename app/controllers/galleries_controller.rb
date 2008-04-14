@@ -131,31 +131,6 @@ private
   def galleries_absolute_path
     galleries_folder = Radiant::Config['gallery.path_prefix']
     galleries_path = File.expand_path(File.join(RAILS_ROOT, galleries_folder))    
-  end
-
-  def create_item(gallery, temp_path)
-    item = GalleryItem.new
-    item.attributes = {
-      :gallery_id => gallery.id,
-      :temp_path => temp_path,
-      :filename => File.basename(temp_path),
-      :content_type => GalleryItem::KnownExtensions[File.extname(temp_path).gsub(/^\./, '')][:content_type]
-    }    
-    item.save
-    FileUtils.rm(temp_path)
-    if item.thumbnailable?
-      [300, 500].each{|size| item.thumb(:width => size, :height => size, :prefix => 'admin')}
-    end
-  end
-  
-  def import_folders
-    folders = Dir[File.join(import_path, '**',  '*')].find_all{|path| path if File.directory?(path)  }
-    folders << import_path
-    folders.collect!{|path| path.gsub(/^#{galleries_absolute_path}/, '')}.sort!
-  end
-  
-  def import_path
-    File.join(galleries_absolute_path, 'import')
-  end
+  end    
   
 end

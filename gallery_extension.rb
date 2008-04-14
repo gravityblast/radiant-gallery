@@ -72,7 +72,7 @@ class GalleryExtension < Radiant::Extension
     if Radiant::Config["gallery.gallery_based"] == 'true'
       Admin::WelcomeController.class_eval do
         def index
-          redirect_to gallery_index_url
+          redirect_to admin_galleries_path
         end
       end
     end
@@ -81,6 +81,9 @@ class GalleryExtension < Radiant::Extension
   def load_configuration    
     load_yaml('gallery') do |configurations|      
       configurations.each do |key, value|
+        if value.is_a?(Hash)
+          value = value.collect{|k, v| "#{k}=#{v}"}.join(',')
+        end
         Radiant::Config["gallery.#{key}"] = value
       end
     end

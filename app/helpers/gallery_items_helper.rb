@@ -18,8 +18,7 @@ module GalleryItemsHelper
   def item_show_button(item)
     content = ''
     if item.image?
-      #content << link_to(image('gallery/show.png'), item.thumb(:width => 500, :height => 500, :prefix => :admin).public_filename, :rel => "lightbox[#{@gallery.name}]", :title => 'Show', :id => "item_#{item.id}_view_title" )
-      content << link_to(image('extensions/gallery/show.png'), item.thumb(:width => 500, :height => 500, :prefix => :admin).public_filename, :class => 'lightwindow', :rel => "Gallery [#{item.gallery.name}]", :title => item.name)
+      content << link_to(image('extensions/gallery/show.png'), item.thumb(:width => 500, :height => 500, :prefix => :admin_preview).public_filename, :class => 'lightwindow', :rel => "Gallery [#{item.gallery.name}]", :title => item.name)
     else
       content << link_to(image('extensions/gallery/show.png'), item.public_filename, :title => item.name)
     end
@@ -49,7 +48,7 @@ module GalleryItemsHelper
   def item_preview(item)
     content = "<div class=\"image\">"
     if item.image?
-      thumb = item.thumb(:width => 300, :height => 300, :prefix => :admin)
+      thumb = item.thumb(:width => 300, :height => 300, :prefix => :admin_thumb)
       width_perc, height_perc = proportional_resize(thumb.width, thumb.height, 100, 100)    
       margin_top = (100 - height_perc) / 2
       content << "<img style=\"margin-top: #{margin_top}%\" src=\"#{thumb.public_filename}\" width=\"#{width_perc}%\" height=\"#{height_perc}%\" />"
