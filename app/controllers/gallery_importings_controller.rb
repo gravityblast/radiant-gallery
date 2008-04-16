@@ -17,11 +17,7 @@ class GalleryImportingsController < ApplicationController
   def create
     selected_path = File.expand_path(File.join(galleries_absolute_path, params[:path]))
     if selected_path =~ /^#{import_path}/ and File.exists?(selected_path)
-      @files = Dir[File.join(selected_path, '**', '*')].find_all{|file| file if File.file?(file)}
-      @files.each do |path|
-        @importing = GalleryImporting.find_or_initialize_by_gallery_id_and_path(@gallery.id, path)
-        @importing.save
-      end
+      params[:recursive] ? recursive_importing(@gallery, selected_path) : import_files(@gallery, selected_path)
     end
     
     respond_to do |format|
@@ -61,10 +57,31 @@ private
   end
   
   def create_item(gallery, temp_path)
+    return unless File.file?(temp_path)
     item = GalleryItem.new
     item.attributes = { :gallery_id => gallery.id, :temp_path => temp_path, :filename => File.basename(temp_path),
       :content_type => GalleryItem::KnownExtensions[File.extname(temp_path).gsub(/^\./, '')][:content_type] }    
     item.save
     FileUtils.rm(temp_path)    
   end
+  
+  def recursive_importing(gallery, path)
+    directories = Dir[File.join(path, '*')].find_all{|file| file if File.directory?(file)}
+    import_files(gallery, path)
+    directories.each do |directory|
+      name = File.basename(directory)
+      new_gallery = Gallery.find_or_initialize_by_parent_id_and_name(gallery.id, name)
+      new_gallery.save
+      recursive_importing(new_gallery, directory)
+    end
+  end
+  
+  def import_files(gallery, path)    
+    files = Dir[File.join(path, '*')].find_all{|file| file if File.file?(file)}    
+    files.each do |file|
+      importing = GalleryImporting.find_or_initialize_by_gallery_id_and_path(gallery.id, file)
+      importing.save
+    end
+  end
+  
 end
