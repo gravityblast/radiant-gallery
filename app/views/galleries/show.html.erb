@@ -17,7 +17,7 @@
 <div class="clear">&nbsp;</div>
 
 <div>
-  <div class="gallery items" id="gallery_items_panel">
+  <div class="gallery items list" id="gallery_items_panel">
     <div style="height: 20px;margin-bottom: 10px;">
       <div class="loading" style="text-align: center" style="display: none;">
         <img src="/images/admin/spinner.gif" /> Loading items...
@@ -26,30 +26,5 @@
     <div id="<%= @gallery.id %>" class="items">
     </div>
     <div class="clear"></div>    
-  </div>
-</div>
-
-<div id="popups">
-  <div class="popup" id="update-item-popup" style="display:none;">
-    <div id="update-item-popup-busy" class="busy" style="display: none;"><%= image 'spinner.gif' %></div>
-    <h3>Edit info</h3>
-    <% form_remote_tag(
-			:url => admin_galleries_path,#gallery_item_update_url(:id => nil),
-			:id => 'update-item-popup-form',
-			:eval_scripts => true,
-			:before => "$('update-item-popup-save-button').disabled=true;$('update-item-popup-save-button').value='Saving...';",
-      :loading => "Element.show('update-item-popup-busy')", 
-      :complete => "Element.hide('update-item-popup-busy')"
-    ) do %>
-      <div>
-				<input type="hidden" id="update-item-popup-id-field" name="id" value="" />
-				<label for="update-item-popup-name-field">Name:</label> <br />
-        <%= text_field_tag "item[name]", "", :id => 'update-item-popup-name-field', :maxlength => 255 %> <br />
-				<label for="update-item-popup-description-field">Description:</label> <br />
-				<%= text_area_tag "item[description]", "",  :id => 'update-item-popup-description-field' %><br />
-        <%= submit_tag "Save", :id => 'update-item-popup-save-button' %> 
-        or <%= link_to_function 'Close', "GalleryItemPopup.closeWithConfirmation();", :class => 'close-link' %>
-      </div>
-    <% end %>
   </div>
 </div>

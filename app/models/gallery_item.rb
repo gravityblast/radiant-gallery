@@ -30,7 +30,7 @@ class GalleryItem < ActiveRecord::Base
   before_destroy :update_positions
   
   after_attachment_saved do |item|
-    item.generate_default_thumbnails if item.parent_id.nil?
+    item.generate_default_thumbnails if item.parent.nil?
   end
      
   def jpeg?
