@@ -141,6 +141,22 @@ module GalleryItemTags
     if @current_item
       tag.expand unless @current_item.last?
     end
+  end  
+  
+  tag "gallery:item:if_field_blank" do |tag|
+    field = tag.attr['field']
+    unless GalleryItem.columns.find{|c| c.name == field }
+      raise GalleryTagError.new("`field' attribute of `if_field_blank' tag must be set to a valid field name")
+    end
+    tag.expand if find_item(tag).send(field).blank?
+  end
+  
+  tag "gallery:item:unless_field_blank" do |tag|
+    field = tag.attr['field']
+    unless GalleryItem.columns.find{|c| c.name == field }
+      raise GalleryTagError.new("`field' attribute of `if_field_blank' tag must be set to a valid field name")
+    end
+    tag.expand unless find_item(tag).send(field).blank?
   end
   
   tag "gallery:items:next_page" do |tag|
