@@ -1,6 +1,4 @@
-<% if @page.class_name == 'GalleryPage' -%>
 <p>
   <label for="page_base_gallery_id">Base gallery</label>
   <%= select :page, :base_gallery_id,  Gallery.find(:all).collect{|g| [g.name, g.id]}.unshift(['None', nil]) %>
 </p>
-<% end -%>

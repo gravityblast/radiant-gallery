@@ -39,12 +39,12 @@ module GalleryItemTags
       options[:offset] = tag.attr['limit'].to_i * (@page_number - 1)      
       @gallery_items_per_page = tag.attr['limit'].to_i
     end
-
+                  
     scope = tag.attr['scope'] ? tag.attr['scope'] : 'gallery'
     raise GalleryTagError.new('Invalid value for attribute scope. Valid values are: gallery, all') unless %[gallery all].include?(scope)
     items = case scope
       when 'gallery'
-        gallery ? gallery.items.find(:all, options) : GalleryItem.find(:all, options)
+        gallery ? gallery.items.find(:all, options) : []
       when 'all'
         GalleryItem.find(:all, options)
     end    

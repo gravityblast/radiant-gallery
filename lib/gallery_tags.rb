@@ -4,6 +4,52 @@ module GalleryTags
   
   class GalleryTagError < StandardError; end
   
+  tag "galleries" do |tag| 
+    tag.expand
+  end
+  
+  desc %{    
+    Usage:
+    <pre><code><r:galleries:each>...</r:galleries:each></code></pre>
+    Iterates through all galleries }
+  tag "galleries:each" do |tag|
+    content = ''
+    options = {}
+    options[:conditions] = {:hidden => false, :external => false}
+    
+    level = tag.attr['level'] ? tag.attr['level'] : 'all'
+    raise GalleryTagError.new('Invalid value for attribute level. Valid values are: current, top, bottom') unless %[current top bottom all].include?(level)
+    case level
+    when 'current'
+      options[:conditions][:parent_id] = if @current_gallery
+        @current_gallery.id
+      elsif self.base_gallery
+        self.base_gallery
+      else
+        nil
+      end
+    when 'top'
+      options[:conditions][:parent_id] = nil
+    when 'bottom'
+      options[:conditions][:children_count] = 0
+    end
+
+    by = tag.attr['by'] ? tag.attr['by'] : "position"
+    unless Gallery.columns.find{|c| c.name == by }
+      raise GalleryTagError.new("`by' attribute of `each' tag must be set to a valid field name")
+    end
+    options[:limit] = tag.attr['limit'] ? tag.attr['limit'].to_i : 9999
+    options[:offset] = tag.attr['offset'] ? tag.attr['offset'].to_i  : 0
+    order = (%w[ASC DESC].include?(tag.attr['order'].to_s.upcase)) ? tag.attr['order'] : "ASC"
+    options[:order] = "#{by} #{order}"
+    galleries = Gallery.find(:all, options)
+    galleries.each do |gallery|
+      tag.locals.gallery = gallery
+      content << tag.expand
+    end
+    content
+  end
+  
   desc %{    
     Usage:
     <pre><code><r:gallery [id='id'] [name='name']>...</r:gallery></code></pre>
@@ -171,6 +217,8 @@ protected
       Gallery.find_by_id tag.attr["id"]
     elsif @current_gallery
       @current_gallery
+    elsif tag.locals.page.base_gallery
+      tag.locals.page.base_gallery
     end
   end
   
