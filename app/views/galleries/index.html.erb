@@ -23,6 +23,6 @@
   </tbody>
 </table>
 <p>
-  <%= link_to image('extensions/gallery/new-gallery.png', :alt => 'New Gallery'), new_admin_gallery_path %>
-  <%= link_to image('extensions/gallery/reorder.png', :alt => 'Reorder Gallery'), reorder_admin_galleries_path if @galleries.size > 1 %>
+  <%= link_to image_tag('extensions/gallery/admin/new-gallery.png', :alt => 'New Gallery'), new_admin_gallery_path %>
+  <%= link_to image_tag('extensions/gallery/admin/reorder.png', :alt => 'Reorder Gallery'), reorder_admin_galleries_path if @galleries.size > 1 %>
 </p>

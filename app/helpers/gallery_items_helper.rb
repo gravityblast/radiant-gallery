@@ -18,9 +18,9 @@ module GalleryItemsHelper
   def item_show_button(item)
     content = ''
     if item.image?
-      content << link_to(image('extensions/gallery/show.png'), item.thumb(:width => 500, :height => 500, :prefix => :admin_preview).public_filename, :class => 'lightwindow', :rel => "Gallery [#{item.gallery.name}]", :title => item.name)
+      content << link_to(image_tag('extensions/gallery/admin/show.png'), item.thumb(:width => 500, :height => 500, :prefix => :admin_preview).public_filename, :class => 'lightwindow', :rel => "Gallery [#{item.gallery.name}]", :title => item.name)
     else
-      content << link_to(image('extensions/gallery/show.png'), item.public_filename, :title => item.name)
+      content << link_to(image_tag('extensions/gallery/admin/show.png'), item.public_filename, :title => item.name)
     end
   end
   
@@ -34,7 +34,7 @@ module GalleryItemsHelper
   end
   
   def item_destroy_button(item)
-    link_to image('extensions/gallery/destroy.png'), admin_gallery_item_url(@gallery, item),
+    link_to image_tag('extensions/gallery/admin/destroy.png'), admin_gallery_item_url(@gallery, item),
         :class => "delete_button",
         :title => 'Destroy',
         :method => 'delete',        
@@ -42,7 +42,7 @@ module GalleryItemsHelper
   end
   
   def item_edit_button(item)
-    link_to(image('extensions/gallery/edit.png'), formatted_edit_admin_gallery_item_path(@gallery, item, :html), :class => 'lightwindow', :params => 'lightwindow_width=800,lightwindow_height=350')
+    link_to(image_tag('extensions/gallery/admin/edit.png'), formatted_edit_admin_gallery_item_path(@gallery, item, :html), :class => 'lightwindow', :params => 'lightwindow_width=800,lightwindow_height=350')
   end
   
   def item_preview(item)

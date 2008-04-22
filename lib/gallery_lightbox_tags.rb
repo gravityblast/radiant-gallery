@@ -8,10 +8,11 @@ module GalleryLightboxTags
     Provides lightbox stylesheet links to be included in HTML HEAD section }
   tag 'gallery:lightbox_stuff' do |tag|
      %{
-<link href="/stylesheets/lightbox/lightbox.css" rel="stylesheet" type="text/css" />
+<link href="/stylesheets/extensions/gallery/lightbox.css" rel="stylesheet" type="text/css" />
 <script src="/javascripts/prototype.js" type="text/javascript"></script>
-<script src="/javascripts/lightbox.js" type="text/javascript"></script>
-<script src="/javascripts/effects.js?1174869275" type="text/javascript"></script>
+<script src="/javascripts/extensions/gallery/builder.js" type="text/javascript"></script>
+<script src="/javascripts/extensions/gallery/lightbox.js" type="text/javascript"></script>
+<script src="/javascripts/effects.js" type="text/javascript"></script>
     }
   end
   
