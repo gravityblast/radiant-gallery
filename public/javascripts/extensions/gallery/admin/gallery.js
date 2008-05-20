@@ -217,6 +217,9 @@ var GalleryItem = Class.create({
       var url = this.delete_button.getAttribute('href');
       new Ajax.Request(url, {
         method: 'delete',
+        parameters: {
+          authenticity_token: encodeURIComponent($('authenticity_token').value)
+        },
         onLoading: function(request) {
           var img = event.element();
           img.setAttribute('src', '/images/admin/spinner.gif');

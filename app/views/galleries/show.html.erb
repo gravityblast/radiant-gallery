@@ -5,7 +5,8 @@
 <% include_stylesheet 'extensions/gallery/admin/lightwindow/lightwindow' %>
 <% include_javascript 'extensions/gallery/admin/gallery' %>
 <% include_stylesheet 'extensions/gallery/admin/gallery' %>
-
+           
+<%= hidden_field_tag 'authenticity_token', form_authenticity_token if protect_against_forgery?  %>
 <h1 id="show_gallery"><%= @gallery.name %></h1>
 <% if flash[:gallery_external_html] -%>
 	<div id="external_html" style="margin-bottom:10px;"><%= flash[:gallery_external_html] %></div>
