@@ -31,7 +31,8 @@
     import_next: function() {
       if(this.files.length > 0) {                
         new Ajax.Request('/admin/galleries/' + this.gallery_id + '/importings/' + this.files.shift() + '/import', {
-          method: 'put', 
+          method: 'put',
+          parameters: "authenticity_token=<%= form_authenticity_token if protect_against_forgery? %>",
           onComplete: function() {
             var progress_perc = parseFloat(this.progress_bar.getStyle('width')) + this.step;
             progress_perc = progress_perc > 100 ? 100 : Math.round(progress_perc);

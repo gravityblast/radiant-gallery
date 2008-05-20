@@ -7,6 +7,7 @@
               '      <p class="title">' +
               '		     <input type="file" size="18" name="gallery_item[uploaded_data]" id="gallery_item_uploaded_data" class="textbox"/>' +
               '		     <input type="submit" value="Upload" class="button"/>' +
+              '		     <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token if protect_against_forgery? %>" />' +
               '      </p>' +
               '      <iframe src="" style="display: none;" name="upload-frame-#{form_id}" id="upload-frame-#{form_id}"></iframe>' +
               '	   </form>' +
