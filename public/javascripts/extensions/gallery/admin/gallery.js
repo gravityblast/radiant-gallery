@@ -346,7 +346,8 @@ var GalleryItemsPanel = Class.create({
 			parameters: {
 				id: id,
 				old_position: old_position,
-				new_position: new_position
+				new_position: new_position,
+				authenticity_token: encodeURIComponent($('authenticity_token').value)
 			}
 		});
 	}
