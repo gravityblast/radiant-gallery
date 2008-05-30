@@ -66,11 +66,14 @@ namespace :radiant do
       
       desc "Create gallery.yml file"
       task :create_config_file do
-        config_path = File.join(RAILS_ROOT, 'vendor/extensions/gallery/config')
-        default_config_file = File.join(config_path, 'gallery.yml.default')
-        config_file = File.join(config_path, 'gallery.yml')
-        if File.exists?(default_config_file) && !File.exists?(config_file)
-          FileUtils.cp(default_config_file, config_file)
+        config_path = File.join(RAILS_ROOT, 'config', 'extensions', 'gallery')
+        mkdir_p(config_path)
+        %w[gallery content_types].each do |name|
+          default_config_file = File.join(File.dirname(__FILE__), '../../', 'config', "#{name}.yml.default")
+          config_file = File.join(config_path, "#{name}.yml")
+          if File.exists?(default_config_file) && !File.exists?(config_file)
+            FileUtils.cp(default_config_file, config_file)
+          end
         end
       end
       

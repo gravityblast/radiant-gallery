@@ -105,8 +105,9 @@ class GalleryExtension < Radiant::Extension
 private 
   
   def load_yaml(filename)
-    filename = File.join(GalleryExtension.root, 'config', "#{filename}.yml")
-    raise GalleryExtensionError.new("GalleryExtension error: #{filename} doesn't exist.") unless File.exists?(filename)
+    config_path = File.join(RAILS_ROOT, 'config', 'extensions', 'gallery')
+    filename = File.join(config_path, "#{filename}.yml")
+    raise GalleryExtensionError.new("GalleryExtension error: #{filename} doesn't exist. Run the install task and try again.") unless File.exists?(filename)
     data = YAML::load_file(filename)
     yield(data)
   end
