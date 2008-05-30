@@ -35,7 +35,7 @@ module GalleryItemTags
     options[:conditions] = {:parent_id => nil}
     
     @page_number = tag.globals.page.request.params["page"] && tag.globals.page.request.params["page"].first.to_i > 1 ? tag.globals.page.request.params["page"].first.to_i : 1
-    unless tag.attr['limit'].nil?
+    if !tag.attr['limit'].nil? && tag.attr['offset'].nil?
       options[:offset] = tag.attr['limit'].to_i * (@page_number - 1)      
       @gallery_items_per_page = tag.attr['limit'].to_i
     end
