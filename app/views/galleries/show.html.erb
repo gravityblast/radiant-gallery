@@ -1,9 +1,12 @@
 <% include_javascript 'dragdrop' %>
+<% include_javascript 'controls' %>
 <% include_javascript 'extensions/gallery/slider' %>
-<% include_javascript 'extensions/gallery/lightwindow' %>
 <% include_javascript 'extensions/gallery/lite_sortable'%>
-<% include_stylesheet 'extensions/gallery/admin/lightwindow/lightwindow' %>
-<% include_javascript 'extensions/gallery/admin/gallery' %>
+<% include_javascript 'extensions/gallery/gallery/panel' %>
+<% include_javascript 'extensions/gallery/gallery/edit_form' %>
+<% include_javascript 'extensions/gallery/gallery/utils' %>
+<% include_javascript 'extensions/gallery/gallery/zoom_slider' %>
+
 <% include_stylesheet 'extensions/gallery/admin/gallery' %>
            
 <%= hidden_field_tag 'authenticity_token', form_authenticity_token if protect_against_forgery?  %>
@@ -17,15 +20,34 @@
   
 <div class="clear">&nbsp;</div>
 
-<div>
-  <div class="gallery items list" id="gallery_items_panel">
-    <div style="height: 20px;margin-bottom: 10px;">
-      <div class="loading" style="text-align: center" style="display: none;">
-        <img src="/images/admin/spinner.gif" /> Loading items...
-      </div>
+<div class="gallery items list" id="gallery_items_panel">
+  <div style="height: 20px;margin-bottom: 10px;">
+    <div class="loading" style="text-align: center" style="display: none;">
+      <img src="/images/admin/spinner.gif" /> Loading items...
     </div>
-    <div id="<%= @gallery.id %>" class="items">
-    </div>
-    <div class="clear"></div>    
   </div>
+  <div id="<%= @gallery.id %>" class="items">
+  </div>
+  <div class="clear"></div>    
 </div>
+
+<%- content_for 'popups' do -%>
+  <div style="position: absolute; top: 100px; display: none;" id="edit-gallery-item-popup" class="gallery-popup">
+    <div style="display: none;" id="busy" class="busy"><img src="/images/admin/spinner.gif?1227891571" alt="Spinner"/></div>
+    <h3>Edit Item</h3>
+    <form>
+      <div>      
+        <label for="edit-item-name">Name</label>
+        <input type="text" id="edit-item-name" size="30">  
+      </div>
+      <div>      
+        <label for="edit-item-description">Description</label>
+        <textarea id="edit-item-description" cols="40" rows="12"></textarea>
+      </div>
+      <p>
+        <img id="edit-spinner" src="/images/admin/spinner.gif" style="display: none;"/>
+        <input id="edit-submit" type="submit" value="Save" /> or <a onclick="Gallery.EditForm.close(); return false;" href="#" class="close-link">Close</a>
+      </p>
+    </form>
+  </div>
+<%- end -%>

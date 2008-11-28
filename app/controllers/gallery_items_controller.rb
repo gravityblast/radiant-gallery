@@ -87,8 +87,10 @@ private
   def find_item    
     @item = @gallery.items.find(params[:id])
   rescue ActiveRecord::RecordNotFound
-    #FIXME: change for format.js
-    redirect_to admin_gallery_url(@gallery)
+    respond_to do |format|
+      format.html { redirect_to admin_gallery_url(@gallery) }
+      format.js   { render :partial => 'not_found' }
+    end
   end          
   
   def find_gallery    

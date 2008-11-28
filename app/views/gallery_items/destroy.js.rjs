@@ -1,5 +1,3 @@
-if @destroyed
-  page.call "GalleryItemsPanel.instance.removeItem", @item.id
-else
-  page.alert "Problem destroying this item"
+unless @destroyed
+  page.alert "Problem destroying this item. Reload the page and try again."
 end

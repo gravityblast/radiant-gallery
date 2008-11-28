@@ -1,9 +1,13 @@
 module GalleryItemsHelper
   
   def item_label(item)
-    content = "<div id=\"item_#{item.id}_name\" class=\"label\" title=\"Edit item info\">"
-    content << link_to(item.name, formatted_edit_admin_gallery_item_path(@gallery, item, :html), :class => 'lightwindow', :params => 'lightwindow_width=800,lightwindow_height=350')
+    content = "<div class=\"label\" title=\"Edit item info\">"
+    content << link_to(item_label_text(item), admin_gallery_item_path(@gallery, item), :class => 'action edit')
     content << '</div>'
+  end
+  
+  def item_label_text(item)
+    item.name.blank? ? '&nbsp;' : item.name
   end
   
   def item_buttons(item)
@@ -18,7 +22,7 @@ module GalleryItemsHelper
   def item_show_button(item)
     content = ''
     if item.image?
-      content << link_to(image_tag('extensions/gallery/admin/show.png'), item.thumb(:width => 500, :height => 500, :prefix => :admin_preview).public_filename, :class => 'lightwindow', :rel => "Gallery [#{item.gallery.name}]", :title => item.name)
+      content << link_to(image_tag('extensions/gallery/admin/show.png'), item.thumb(:width => 500, :height => 500, :prefix => :admin_preview).public_filename, :rel => 'lightbox[#{item.gallery.name}]', :title => item.name)
     else
       content << link_to(image_tag('extensions/gallery/admin/show.png'), item.public_filename, :title => item.name)
     end
@@ -35,14 +39,12 @@ module GalleryItemsHelper
   
   def item_destroy_button(item)
     link_to image_tag('extensions/gallery/admin/destroy.png'), admin_gallery_item_url(@gallery, item),
-        :class => "delete_button",
-        :title => 'Destroy',
-        :method => 'delete',        
-        :onclick => "GalleryItems.delete_if_confirm(#{item.id}, '#{admin_gallery_item_url(@gallery, item)}'); return false;"
+      :class => 'action destroy', :title => 'Destroy'
   end
   
   def item_edit_button(item)
-    link_to(image_tag('extensions/gallery/admin/edit.png'), formatted_edit_admin_gallery_item_path(@gallery, item, :html), :class => 'lightwindow', :params => 'lightwindow_width=800,lightwindow_height=350')
+    link_to image_tag('extensions/gallery/admin/edit.png'), admin_gallery_item_path(@gallery, item),
+      :class => 'action edit', :title => 'Edit'
   end
   
   def item_preview(item)

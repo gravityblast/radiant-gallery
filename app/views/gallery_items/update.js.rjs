@@ -1,4 +1,3 @@
-page["item_#{@item.id}_name"].down('a').update(@item.name)
-page["popup_save_button"].value = 'Save'
-page["popup_save_button"].disabled = false
-page.call 'GalleryItemsPanel.instance.lightwindow.deactivate'
+page["item_#{@item.id}"].down('.label a').update(item_label_text(@item))
+page["item_#{@item.id}"].down('.description').update(@item.description)
+page.call 'Gallery.EditForm.close'

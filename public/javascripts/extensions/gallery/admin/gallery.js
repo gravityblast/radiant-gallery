@@ -143,13 +143,7 @@ var GalleryZoomSlider = Class.create({
 	onChange: function(value) {		
 		this.value = value;
 		this.saveZoomCookie();
-		this.zoom();
-		if(GalleryItemsPanel.instance) {
-		  GalleryItemsPanel.instance.lightwindow._getPageDimensions();
-		  $('lightwindow_overlay').setStyle({
-		    height: GalleryItemsPanel.instance.lightwindow.pageDimensions.height+'px'
-		  });
-		}
+		this.zoom();		
 	},
 	
 	onSlide: function(value) {
@@ -276,7 +270,6 @@ var GalleryItemsPanel = Class.create({
         this.element.down('div.loading').hide();        
         this.setupSortable();
         this.setupItems();
-        this.lightwindow = new lightwindow();
       }.bind(this)
     });
   }, 
@@ -299,9 +292,6 @@ var GalleryItemsPanel = Class.create({
         this.element.down('div.loading').hide();
         this.setupSortable();
         var item = $('item_' + id);
-        item.select('a.lightwindow').each(function(link) {
-          this.lightwindow._processLink(link);
-        }.bind(this));
         this.setupItem(item);
       }.bind(this)
     });
@@ -364,7 +354,6 @@ Gallery.openPopup = function(url, name) {
 
 GalleryZoomSlider.init  = function() { new GalleryZoomSlider('handle', 'track', 'gallery_items_panel'); }
 GalleryItemsPanel.init  = function() {   
-  Event.stopObserving(window, 'load', lightwindowInit, false);
   GalleryItemsPanel.instance = new GalleryItemsPanel('gallery_items_panel');
 }
 GalleryTree.init        = function() { GalleryTree.instance       = new GalleryTree('gallery_tree'); }
