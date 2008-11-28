@@ -6,8 +6,14 @@
 <% include_javascript 'extensions/gallery/gallery/edit_form' %>
 <% include_javascript 'extensions/gallery/gallery/utils' %>
 <% include_javascript 'extensions/gallery/gallery/zoom_slider' %>
+<% include_javascript 'extensions/gallery/gallery/zoom_slider' %>
+
 
 <% include_stylesheet 'extensions/gallery/admin/gallery' %>
+
+<% include_javascript 'extensions/gallery/builder' %>
+<% include_javascript 'extensions/gallery/lightbox' %> 
+<% include_stylesheet 'extensions/gallery/lightbox' %>
            
 <%= hidden_field_tag 'authenticity_token', form_authenticity_token if protect_against_forgery?  %>
 <h1 id="show_gallery"><%= @gallery.name %></h1>

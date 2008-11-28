@@ -16,7 +16,7 @@
               '    <img src="/images/admin/spinner.gif" />' +
               '  </div>' +
               '  <div style="display: none; text-align: center;" id="form-success-message-#{form_id}" class="form-loading">' +
-              '    File has been uploaded correctly. <a href="#" onclick="GalleryUploadForms.remove(#{form_id})">Close</a>' +
+              '    File has been uploaded correctly.' +
               '  </div>' +
               '  <div style="display: none; text-align: center;" id="form-error-message-#{form_id}" class="form-loading">' +
               '    Problems uploading your file. <a href="#" onclick="$(\'form-error-message-#{form_id}\').hide();$(\'form-#{form_id}\').show();return false;">Retry &gt;&gt;</a>' +
@@ -79,7 +79,7 @@
   }); 
   
   function closeWindow() {
-    if(window.opener.GalleryItemsPanel.instance.working) {
+    if(window.opener.Gallery.panel.working) {
       alert('Opener window is still working!')
     } else {
       window.close();

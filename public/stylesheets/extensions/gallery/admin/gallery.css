@@ -42,6 +42,7 @@ div.gallery.items div.item div.label a:hover,
 div.gallery.items div.item div.label a:active {
   color: #000;
   text-decoration: none;
+	display: block;
 }
 
 div.gallery.items div.item div.buttons {
@@ -168,7 +169,40 @@ div#gallery_items_panel_zoom div#track div#handle {
 
 /* popups */
 
-#popups {
+#popups .gallery-popup {
+  background-color: white;
+  border: 5px solid silver;
+  padding: 2em;
+  padding-top: 1em;
+  padding-bottom: .5em;
+	width: 550px;  
+}
+
+#popups .gallery-popup label {
+	font-size: 80%;
+	line-height:1.2em;
+	color: #454545;
+	display: block;
+}
+
+#popups .gallery-popup .busy {
+  float: right;
+}
+#popups .gallery-popup h3 {
+  margin-top: 0;
+}
+#popups .gallery-popup .close-link {
+  font-size: 85%;
+}
+
+
+#popups .gallery-popup input[type="text"], #popups .gallery-popup textarea {
+	border: 1px solid #AAAAAA;
+	font-size:110%;
+	width:98%;
+}                
+
+/*#popups {
   height: 100%;
 }
   
@@ -198,49 +232,4 @@ div#gallery_items_panel_zoom div#track div#handle {
 	height: 190px;
 	margin-bottom: 10px;
 }
-
-
-/* crop */
-
-div.crop {
-	text-align: center;
-}
-	
-div.crop div.imgCrop_wrap{   
-	margin: 0 auto;
-} 
-
-div.crop {
-	position: relative;
-}
-
-div.crop img.busy{
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	margin-top: -8px;
-	margin-left: -8px;
-	z-index: 9999;
-}
-
-
-/* importing */
-
-ul.importing {
-	list-style-type: none;
-	margin: 0;
-	padding: 0;
-	font-size: 100%;
-}
-
-ul.importing li{
-	line-height: 18px;
-}
-
-ul.importing li.even{
-	background: #f5f1e2;
-}
-
-ul.importing li.odd{
-	background: #FFF;
-}
+ */
