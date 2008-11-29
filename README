@@ -17,13 +17,17 @@ Radiant-Gallery is a RadiantCMS extension that allows to manage galleries of ima
   
 == Installation
 
-  After installing radiant check out the radiant-gallery extension under the vendor/extensions folder:
+  After tha Radiant installation you must install the attachment_fu plugin:
     
-    cd vendor/extensions
+    cd /path/to/radiant
+        
+    git clone git://github.com/technoweenie/attachment_fu.git vendor/plugins/attachment_fu
     
-    git clone git://github.com/pilu/radiant-gallery.git gallery
+  Then install the Gallery extension:
+    
+    git clone git://github.com/pilu/radiant-gallery.git vendor/extensions/gallery
   
-  Then from your radiant application root launch the install task:
+  Ok, now you can run the install task:
   
     rake RAILS_ENV=production radiant:extensions:gallery:install
     
