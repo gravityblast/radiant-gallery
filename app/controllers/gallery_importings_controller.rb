@@ -1,3 +1,5 @@
+require 'action_controller/test_process.rb'
+
 class GalleryImportingsController < ApplicationController
   
   helper 'galleries'
@@ -58,10 +60,12 @@ private
   
   def create_item(gallery, temp_path)
     return unless File.file?(temp_path)
-    item = GalleryItem.new
-    item.attributes = { :gallery_id => gallery.id, :temp_path => temp_path, :filename => File.basename(temp_path),
-      :content_type => GalleryItem::KnownExtensions[File.extname(temp_path).gsub(/^\./, '')][:content_type] }    
-    item.save
+    mimetype = GalleryItem::KnownExtensions[File.extname(temp_path).gsub(/^\./, '')][:content_type]
+    @item = GalleryItem.new(
+      :uploaded_data => ActionController::TestUploadedFile.new(temp_path, mimetype)
+    )
+    @item.gallery = gallery
+    @item.save
     FileUtils.rm(temp_path)    
   end
   
