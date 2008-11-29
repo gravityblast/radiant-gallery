@@ -74,24 +74,6 @@ class GalleriesController < ApplicationController
     end
   end
   
-  # def retrieve_file
-  #     @file_url = params[:file_url]
-  #     uri = URI.parse(@file_url)
-  #     raise "You can specify only HTTP and FTP url using file url mode." unless uri.is_a?(URI::HTTP) || uri.is_a?(URI::FTP)
-  #     temp_file_path = File.join(Technoweenie::AttachmentFu.tempfile_path, File.basename(@file_url.gsub(/\?.*$/, '')))
-  #     open(@file_url) do |remote_file|      
-  #       File.open(temp_file_path, 'w') do |file|
-  #         file.write(remote_file.read)
-  #       end                  
-  #     end
-  #     create_item(@gallery, temp_file_path)
-  #     flash[:notice] = "Your file has been saved below."    
-  #   rescue Exception => e
-  #     flash[:error] = "I had troubles retrieving your file :( -  #{e}"    
-  #   ensure
-  #     redirect_to gallery_show_url(:id => @gallery)
-  #   end    
-
   def clear_thumbs
     @gallery.clear_thumbs
     flash[:notice] = 'Thumbnails have been deleted correctly'
