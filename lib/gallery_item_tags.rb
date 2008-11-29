@@ -224,13 +224,13 @@ module GalleryItemTags
   
   desc %{
     Usage:
-    <pre><code><r:gallery:item:thumb [width='width' height='height'] /></code></pre>
+    <pre><code><r:gallery:item:thumb [width='width' height='height' prefix='preview'] /></code></pre>
     Provides a sized image for current gallery item.
     Current size values are: icon, small, medium, large }
   tag 'gallery:item:thumb' do |tag|    
     item = find_item(tag)
     options = {}
-    [:width, :height].each{|symbol| options[symbol] = tag.attr[symbol.to_s] if tag.attr[symbol.to_s] }
+    [:width, :height, :prefix].each{|symbol| options[symbol] = tag.attr[symbol.to_s] if tag.attr[symbol.to_s] }
     item.thumb(options).public_filename
   end
   
