@@ -21,6 +21,8 @@ class GalleryItem < ActiveRecord::Base
   belongs_to :created_by, :class_name => 'User', :foreign_key => 'created_by'
   belongs_to :update_by, :class_name => 'User', :foreign_key => 'update_by'
   
+  belongs_to :parent, :class_name => 'GalleryItem', :foreign_key => 'parent_id'
+  
   has_many :infos, :class_name => "GalleryItemInfo", :dependent => :delete_all
 
   before_create :set_filename_as_name
@@ -31,8 +33,28 @@ class GalleryItem < ActiveRecord::Base
   
   after_attachment_saved do |item|
     item.generate_default_thumbnails if item.parent.nil?
+  end       
+  
+  before_thumbnail_saved do |item, thumbnail|
+    thumbnail.gallery_id = item.gallery_id
+  end                                                
+  
+  def thumb(options = {})
+    if self.thumbnailable?
+      prefix    = options[:prefix] ? "#{options[:prefix]}_" : ''    
+      size      = proportional_resize(:max_width => options[:width], :max_height => options[:height])    
+      suffix    = "#{prefix}#{size[0]}x#{size[1]}"      
+      thumbnail = self.thumbnails.find_by_thumbnail(suffix)
+      unless thumbnail
+        temp_file = create_temp_file
+        thumbnail = create_or_update_thumbnail(temp_file, suffix, size)
+      end      
+      thumbnail
+    else
+      self
+    end
   end
-     
+  
   def jpeg?
     not (self.content_type =~ /jpeg/).nil?
   end
@@ -40,34 +62,6 @@ class GalleryItem < ActiveRecord::Base
   def absolute_path
     File.expand_path(self.full_filename)
   end
-  
-  def thumb(options = {})
-    thumbnail_options = {}
-    if options[:width] or options[:height]      
-      thumbnail_options[:suffix] = "#{options[:prefix] ? options[:prefix].to_s + '_' : ''}#{options[:width]}x#{options[:height]}"
-      thumbnail_options[:size] = proportional_resize(:max_width => options[:width], :max_height => options[:height])
-    end
-    if respond_to?(:process_attachment_with_processing) && thumbnailable? && parent_id.nil?
-      tmp_thumb = find_or_initialize_thumbnail(thumbnail_options[:suffix])
-      if tmp_thumb.new_record?
-        logger.debug("Generating thumbnail(GalleryItem ID: #{self.id}: Prefix: #{thumbnail_options[:suffix]})")
-        tmp_thumb.attributes = {
-          :content_type             => content_type, 
-          :filename                 => thumbnail_name_for(thumbnail_options[:suffix]), 
-          :temp_path                => create_temp_file,
-          :thumbnail_resize_options => thumbnail_options[:size],
-          :gallery_id               => self.gallery_id,
-          :position                 => nil,
-          :parent_id                => self.id
-        }
-        callback_with_args :before_thumbnail_saved, tmp_thumb
-        tmp_thumb.save!        
-      else
-        logger.debug("Thumbnail already exists (GalleryItem ID: #{self.id}: Prefix: #{thumbnail_options[:suffix]})")
-      end
-    end       
-    tmp_thumb || self
-  end    
   
   def full_filename(thumbnail = nil)
     file_system_path = (thumbnail ? thumbnail_class : self).attachment_options[:path_prefix].to_s
@@ -79,14 +73,12 @@ class GalleryItem < ActiveRecord::Base
     self.position ==  self.gallery.items.count
   end
   
-  def generate_default_thumbnails
-    logger.debug "Generating default thumbnails..."
-    default_thumbnails = Radiant::Config['gallery.default_thumbnails']
-    if self.thumbnailable? and default_thumbnails
+  def generate_default_thumbnails      
+    if self.thumbnailable? and default_thumbnails = Radiant::Config['gallery.default_thumbnails']
       default_thumbnails.split(',').each do |default_thumbnail|
         if default_thumbnail =~ /^(\w+)=(\d+)x(\d+)$/
           prefix, width, height = $1, $2, $3
-          self.thumb(:width => width, :height => height, :prefix => prefix)
+          self.thumb(:width => width, :height => height, :prefix => prefix, :gino => 'OK')
         end
       end
     end
@@ -95,17 +87,19 @@ class GalleryItem < ActiveRecord::Base
 protected    
 
   def set_filename_as_name
-    ext = File.extname(filename)
-    filename_without_extension = filename[0, filename.size - ext.size]
-    self.name = filename_without_extension
+    unless parent
+      ext = File.extname(filename)
+      filename_without_extension = filename[0, filename.size - ext.size]
+      self.name = filename_without_extension
+    end
   end 
   
   def set_position
-    self.position = self.gallery.items.count + 1 if self.parent.nil?
+    self.position = self.gallery.items.count + 1 unless parent
   end
   
   def set_extension
-    self.extension = self.filename.split(".").last.to_s.downcase
+    self.extension = self.filename.split(".").last.to_s.downcase unless parent
   end      
   
   def update_positions
