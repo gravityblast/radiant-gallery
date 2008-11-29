@@ -29,9 +29,16 @@ Radiant-Gallery is a RadiantCMS extension that allows to manage galleries of ima
   
   Ok, now you can run the install task:
   
-    rake RAILS_ENV=production radiant:extensions:gallery:install
-    
-Enjoy :)
+    rake RAILS_ENV=production radiant:extensions:gallery:install 
+
+== Documentation
+
+=== Your first gallery
+
+  After the installation you will be able to see the 'Galleries' tab in the Radiant administration panel.
+  Click on it and start creating galleries and uploading images.
+  Now create a new page, choose on of the layouts created during the gallery extension installation, and set 'Gallery' as page type.
+  Publish the new page and go to its url.  
 
 == Contributors
 
