@@ -54,8 +54,8 @@
   }
 
   #content div.galleries div.gallery div.thumb {
-  	width: 80px;
-  	height: 80px;
+  	width: 120px;
+  	height: 120px;
   	position: relative;
   	float: left;
   	background-color: transparent;
@@ -67,12 +67,12 @@
     text-indent: -9999px;
     background-color: transparent;
     display: block;
-    height: 100px;
+    height: 100%;
     -moz-outline: none;
   }
 
   #content div.galleries div.gallery div.description {
-  	width: 400px;
+  	width: 360px;
   	float: right;
   }
 
@@ -179,7 +179,7 @@
           <r:galleries:each level="current">
             <div class="gallery">    
               <r:gallery:if_items>
-                <div class="thumb" style="background-image: url('<r:gallery:item:thumb width="120" position="first" />');">
+                <div class="thumb" style="background-image: url('<r:gallery:item:thumb width="150" prefix="small" position="first" />');">
                   <a href="<r:gallery:gallery_url />" title="<r:gallery:name />">
                     <r:gallery:name />
                   </a>                
@@ -204,7 +204,7 @@
               <r:gallery:items:each>
                 <!-- item -->
                 <div class="container">
-                  <div class="thumb" style="background-image: url('<r:gallery:item:thumb width="150" />')">
+                  <div class="thumb" style="background-image: url('<r:gallery:item:thumb width="150" prefix="small" />')">
                     <a href="<r:gallery:item:page_url />">
                       <r:gallery:item:name />
                      </a>
@@ -238,7 +238,7 @@
               <h2><r:gallery:item:name /></h2>  
               <div class="image">
                 <a href="<r:gallery:item:path />">
-                  <img src="<r:gallery:item:thumb width="450" />" alt="<r:gallery:item:name />" />
+                  <img src="<r:gallery:item:thumb width="450" prefix="large" />" alt="<r:gallery:item:name />" />
                 </a>
               </div>
               <p>
