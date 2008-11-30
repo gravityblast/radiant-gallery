@@ -1,50 +1,134 @@
 == Gallery
 
-  Created by: Andrea Franz - http://gravityblast.com
-  Version: 0.7.12
-  Contact: andrea AT gravityblast DOT com
-
-Radiant-Gallery is a RadiantCMS extension that allows to manage galleries of images, photos and all kind of files.
+A Radiant (http://radiantcms.org) extension by Andrea Franz (http://gravityblast.com) that allows to manage galleries of images, photos and all kind of files.
 
 == Features
 
-  * Multiple nested galleries
-  * Multiple upload
-  * Import from ftp
-  * Images/Files sorting by drag-n-drop
-  * Automatic thumbnail generation for images after upload
-  * Preview in lightwindow for images
+* Multiple nested galleries
+* Multiple upload
+* Import from ftp
+* Images/Files sorting by drag-n-drop
+* Automatic thumbnail generation for images after upload
+* Preview in lightwindow for images
   
 == Installation
 
-  After tha Radiant installation you must install the attachment_fu plugin:
-    
-    cd /path/to/radiant
-        
-    git clone git://github.com/technoweenie/attachment_fu.git vendor/plugins/attachment_fu
-    
-  Then install the Gallery extension:
-    
-    git clone git://github.com/pilu/radiant-gallery.git vendor/extensions/gallery
+After tha Radiant installation you must install the attachment_fu plugin:
   
-  Ok, now you can run the install task:
+  cd /path/to/radiant
+      
+  git clone git://github.com/technoweenie/attachment_fu.git vendor/plugins/attachment_fu
   
-    rake RAILS_ENV=production radiant:extensions:gallery:install 
+Then install the Gallery extension:
+  
+  git clone git://github.com/pilu/radiant-gallery.git vendor/extensions/gallery
 
+Now you can run the install task:
+
+  rake RAILS_ENV=production radiant:extensions:gallery:install 
+
+== Configuration
+
+The installation task creates a file called gallery.yml under /path/to/radiant/config/extensions/gallery/.
+Inside that file there are some variables you can edit:
+
+* path_prefix: The galleries folder path.
+* processor: The processor used to create thumbnails (rmagick | image_science | mini_magick).
+* default_thumbnails: a list of thumbnails that will be generated after each upload.
+  
 == Documentation
 
 === Your first gallery
 
-  After the installation you will be able to see the 'Galleries' tab in the Radiant administration panel.
-  Click on it and start creating galleries and uploading images.
-  Now create a new page, choose on of the layouts created during the gallery extension installation, and set 'Gallery' as page type.
-  Publish the new page and go to its url.  
+After the installation you will be able to see the 'Galleries' tab in the Radiant administration panel.
+Click on it and start creating galleries and uploading images.
+Now create a new page, choose one of the layouts created during the gallery extension installation, and set 'Gallery' as page type.
+Publish the new page and go to its url.
+  
+=== Displaying images from a specific gallery
 
+  <r:gallery id="GALLERY_ID">
+    <ul>
+      <r:gallery:items:each by="position" sort="asc">
+        <li><r:gallery:item:path /></li>
+      </r:gallery:items:each>
+    </ul>
+  </r:gallery>
+
+=== Displaying all galleries
+
+  <ul>
+    <r:galleries:each level="all|top|bottom|current">
+      <li><r:gallery:name /></li>
+    </r:galleries:each>
+  </ul>
+  
+The value of the level attribute could be:
+
+* all (default): displays all galleries
+* top: displays galleries without a parent
+* bottom: displays galleries without children
+* current: displays children of the current gallery. If the current gallery is not set, it displays all the top galleries.
+ 
+=== Displaying all images
+
+  <ul>
+    <r:gallery:items:each by="created_at" sort="desc" scope="all">
+      <li><r:gallery:item:thumb width="100" height="100" prefix="small" /></li>
+    </r:gallery:items:each>
+  </ul>
+
+The value of the scope attribute could be:
+
+* gallery (default): displays images of the current gallery
+* all: displays all uploaded images
+  
+=== The current Gallery
+  
+Create a gallery tree like the following:
+
+  - Languages
+       | - Ruby
+       | - Python
+       | - Java
+     
+Now create a Gallery page (with gallery as page type) called gallery. Go to its url (http://localhost:3000/gallery).
+In that page the current gallery is not set, but if you go to '/gallery/languages', the current gallery is Languages,
+under '/gallery/languages/ruby' the current gallery is Ruby and so on.
+
+Otherwise you can set the current gallery using the gallery tag:
+
+  <r:gallery id="GALLERY_ID">
+    <r:galleries:each level="current">
+      <!-- loop through the current gallery children -->
+    </r:galleries>
+    <r:gallery:items>
+      <!-- loop through the current gallery images -->
+    </r:gallery:items>
+  <r:gallery>     
+
+=== Thumbnails generation   
+
+Thumbnails are generated on the fly with the gallery:item:thumb tag. Inside a page you can write:
+
+    <r:gallery id="GALLERY_ID">
+      <r:gallery:item:thumb width="200" height="100" prefix="small" position="first"/>
+    </r:gallery>
+
+The first time you will open that page, the system will generate a thumbnail for the first image of the gallery with id GALLERY_ID.
+The signature of that thumbnail will be: 'small_200x100'.
+The next time the system will not generate the thumbnail if that image already has a thumbnail with that signature.    
+If you want to generate that thumbnail just after the upload of the image, add that signature inside the gallery.yml configuration file:
+
+  default_thumbnails:
+    admin_thumb: 300x300   # do not remove
+    admin_preview: 500x500 # do not remove
+    small: 200x100 # this is the signature you use in the page.
+                
 == Contributors
 
-  Version: 0.3.0
-    Adam Salter - http://10outta10.com
+* Version: 0.3.0  - Adam Salter - http://10outta10.com
 
 == Credits
 
-   Icons by http://www.famfamfam.com/
+Icons by http://www.famfamfam.com/
