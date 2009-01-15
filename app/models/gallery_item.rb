@@ -44,8 +44,18 @@ class GalleryItem < ActiveRecord::Base
   def thumb(options = {})
     if self.thumbnailable?
       prefix    = options[:prefix] ? "#{options[:prefix]}_" : ''    
-      size      = proportional_resize(:max_width => options[:width], :max_height => options[:height])
-      suffix    = "#{prefix}#{size[0]}x#{size[1]}"      
+      if options[:special].compact.length > 0
+        pre = options[:special][0] == null ? '' : options[:special][0] 
+        post = options[:special][1] == null ? '' : options[:special][1] 
+        size    = "#{pre}#{options[:width]}x#{options[:height]}#{post}"
+        suffix    = "#{prefix}#{size}"      
+      elsif options[:geometry] != nil
+        size = options[:geometry]   
+        suffix  = "#{prefix}#{size}"      
+      else
+        size    = proportional_resize(:max_width => options[:width], :max_height => options[:height])
+        suffix    = "#{prefix}#{size[0]}x#{size[1]}"      
+      end                        
       thumbnail = self.thumbnails.find_by_thumbnail(suffix)
       unless thumbnail
         temp_file = create_temp_file
@@ -78,9 +88,9 @@ class GalleryItem < ActiveRecord::Base
   def generate_default_thumbnails      
     if self.thumbnailable? and default_thumbnails = Radiant::Config['gallery.default_thumbnails']
       default_thumbnails.split(',').each do |default_thumbnail|
-        if default_thumbnail =~ /^(\w+)=(\d+)?x(\d+)?$/
-          prefix, width, height = $1, $2, $3
-          self.thumb(:width => width, :height => height, :prefix => prefix)
+         if default_thumbnail =~ /^(\w+)=([a-z])?(\d+)?x(\d+)?([%!<>@]?)$/
+           prefix, pre_char, width, height, post_char = $1, $2, $3, $4, $5
+           self.thumb(:width => width, :height => height, :prefix => prefix, :special => [pre_char, post_char])
         end
       end
     end

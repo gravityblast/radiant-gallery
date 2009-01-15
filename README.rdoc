@@ -74,7 +74,7 @@ The value of the level attribute could be:
 
   <ul>
     <r:gallery:items:each by="created_at" sort="desc" scope="all">
-      <li><r:gallery:item:thumb width="100" height="100" prefix="small" /></li>
+      <li><r:gallery:item:thumb width="100" height="100" prefix="small" geometry="c50x50"/></li>
     </r:gallery:items:each>
   </ul>
 
@@ -112,7 +112,7 @@ Otherwise you can set the current gallery using the gallery tag:
 Thumbnails are generated on the fly with the gallery:item:thumb tag. Inside a page you can write:
 
     <r:gallery id="GALLERY_ID">
-      <r:gallery:item:thumb width="200" height="100" prefix="small" position="first"/>
+      <r:gallery:item:thumb width="200" height="100" prefix="small" position="first" geometry="c50x50"/>
     </r:gallery>
 
 The first time you will open that page, the system will generate a thumbnail for the first image of the gallery with id GALLERY_ID.
