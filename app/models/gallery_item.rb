@@ -43,10 +43,10 @@ class GalleryItem < ActiveRecord::Base
   
   def thumb(options = {})
     if self.thumbnailable?
-      prefix    = options[:prefix] ? "#{options[:prefix]}_" : ''    
-      if options[:special].compact.length > 0
-        pre = options[:special][0] == null ? '' : options[:special][0] 
-        post = options[:special][1] == null ? '' : options[:special][1] 
+      prefix    = options[:prefix] ? "#{options[:prefix]}_" : '' 
+      if options[:special] != nil && options[:special].compact.length > 0                       
+        pre = options[:special][0] || ''
+        post = options[:special][1] || ''
         size    = "#{pre}#{options[:width]}x#{options[:height]}#{post}"
         suffix    = "#{prefix}#{size}"      
       elsif options[:geometry] != nil
