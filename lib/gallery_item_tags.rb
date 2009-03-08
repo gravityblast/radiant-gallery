@@ -210,7 +210,7 @@ scope='all|gallery']>
   
   desc %{
     Usage:
-    <pre><code><r:gallery:item:content-type /></code></pre>
+    <pre><code><r:gallery:item:content_type /></code></pre>
     Provides content-type for current gallery item }
   tag "gallery:item:content_type" do |tag|
     item = find_item(tag)
@@ -219,7 +219,7 @@ scope='all|gallery']>
   
   desc %{
     Usage:
-    <pre><code><r:gallery:item:content-type /></code></pre>
+    <pre><code><r:gallery:item:if_content_type /></code></pre>
     Provides content-type for current gallery item }
   tag "gallery:item:if_content_type" do |tag|
     item = find_item(tag)

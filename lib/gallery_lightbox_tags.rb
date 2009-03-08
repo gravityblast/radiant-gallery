@@ -4,7 +4,7 @@ module GalleryLightboxTags
   
   desc %{
     Usage:
-    <pre><code><r:gallery:item:description /></code></pre>
+    <pre><code><r:gallery:lightbox_stuff /></code></pre>
     Provides lightbox stylesheet links to be included in HTML HEAD section }
   tag 'gallery:lightbox_stuff' do |tag|
      %{

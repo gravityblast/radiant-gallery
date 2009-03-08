@@ -191,18 +191,18 @@ module GalleryTags
   
   desc %{
     Usage:
-    <pre><code><r:gallery:item:children_size /></code></pre>
+    <pre><code><r:gallery:children_size /></code></pre>
     Provides the number of children for current gallery }
-  tag "gallery:gallery:children_size" do |tag|  
+  tag "gallery:children_size" do |tag|  
     gallery = find_gallery(tag)
     gallery.children.size    
   end
   
   desc %{
     Usage:
-    <pre><code><r:gallery:item:items_size /></code></pre>
+    <pre><code><r:gallery:items_size /></code></pre>
     Provides the number of items for current gallery }
-  tag "gallery:gallery:items_size" do |tag|  
+  tag "gallery:items_size" do |tag|  
     gallery = find_gallery(tag)
     gallery.items.size    
   end
