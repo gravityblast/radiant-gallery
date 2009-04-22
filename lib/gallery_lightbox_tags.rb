@@ -28,9 +28,9 @@ module GalleryLightboxTags
     
     content = %{ <div class="lightbox_gallery_list"><ul> }
     gallery.items.each do |item| 
-      width, height, size, geomtery = tag.attr["thumb_width"], tag.attr["thumb_height"], tag.attr["thumb_size"], tag.attr["thumb_geomtery"]
+      width, height, size, geometry = tag.attr["thumb_width"], tag.attr["thumb_height"], tag.attr["thumb_size"], tag.attr["thumb_geometry"]
       thumb_path = item.thumb(:width => width, :height => height, :geometry => geometry).public_filename
-      width, height, size, geometry = tag.attr["image_width"], tag.attr["image_height"], tag.attr["image_size"], tag.attr["image_geomtery"] 
+      width, height, size, geometry = tag.attr["image_width"], tag.attr["image_height"], tag.attr["image_size"], tag.attr["image_geometry"] 
       image_path = item.thumb(:width => width, :height => height, :geometry => geometry).public_filename 
       li_start_tag = tag.attr["thumbnail"] == 'none' ? '<li>' : %{<li style="background-image: url('#{thumb_path}')">}       
       content << %{ #{li_start_tag}     
