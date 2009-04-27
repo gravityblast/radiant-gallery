@@ -9,10 +9,9 @@ module GalleryLightboxTags
   tag 'gallery:lightbox_stuff' do |tag|
      %{
 <link href="/stylesheets/extensions/gallery/lightbox.css" rel="stylesheet" type="text/css" />
-<script src="/javascripts/prototype.js" type="text/javascript"></script>
-<script src="/javascripts/extensions/gallery/builder.js" type="text/javascript"></script>
+<script src="/javascripts/extensions/gallery/prototype.js" type="text/javascript"></script>
+<script src="/javascripts/extensions/gallery/scriptaculous?load=builder,effects" type="text/javascript"></script>
 <script src="/javascripts/extensions/gallery/lightbox.js" type="text/javascript"></script>
-<script src="/javascripts/effects.js" type="text/javascript"></script>
     }
   end
   
