@@ -33,7 +33,7 @@ module GalleryLightboxTags
       image_path = item.thumb(:width => width, :height => height, :geometry => geometry).public_filename 
       li_start_tag = tag.attr["thumbnail"] == 'none' ? '<li>' : %{<li style="background-image: url('#{thumb_path}')">}       
       content << %{ #{li_start_tag}     
-                    <a href="#{image_path}" rel="lightbox[#{gallery.name}]" title="#{item.name}">
+                    <a href="#{image_path}" rel="lightbox[#{gallery.name.downcase.gsub(/[^-a-z0-9~\s\.:;+=_]/,'')}]" title="#{item.name}">
                     #{item.name}    
                     </a></li>}
     end unless gallery.items.empty?
