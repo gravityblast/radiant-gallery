@@ -10,7 +10,7 @@ module GalleryLightboxTags
      %{
 <link href="/stylesheets/extensions/gallery/lightbox.css" rel="stylesheet" type="text/css" />
 <script src="/javascripts/extensions/gallery/prototype.js" type="text/javascript"></script>
-<script src="/javascripts/extensions/gallery/scriptaculous?load=builder,effects" type="text/javascript"></script>
+<script src="/javascripts/extensions/gallery/scriptaculous.js?load=builder,effects" type="text/javascript"></script>
 <script src="/javascripts/extensions/gallery/lightbox.js" type="text/javascript"></script>
     }
   end
