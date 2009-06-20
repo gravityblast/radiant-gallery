@@ -9,7 +9,9 @@
     	<label for="update-item-popup-name-field">Name:</label> <br />
       <%= f.text_field :name, :maxlength => 255 %> <br />
     	<label for="update-item-popup-description-field">Description:</label> <br />
-    	<%= f.text_area :description %><br />
+    	<%= f.text_area :description %><br />       
+			<label for='update-item-popup-keywords-field'>Keywords:</label><br/>
+			<%= f.text_field :keywords, :maxlength => 255 %><br/>
       <%= submit_tag "Save", :id => 'popup_save_button' %> 
     </div>
     <% end %>

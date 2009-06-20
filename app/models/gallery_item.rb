@@ -10,14 +10,14 @@ class GalleryItem < ActiveRecord::Base
         @@extensions[extension.downcase] || 'Unknown'
       end
     end
-  end      
+  end
   
   attr_accessible :name, :description, :uploaded_data
   
   has_attachment :storage => :file_system,
     :path_prefix => Radiant::Config["gallery.path_prefix"],
     :processor => Radiant::Config["gallery.processor"],
-    :max_size => 3.megabytes     
+    :max_size => Radiant::Config["gallery.max_size"].to_i.kilobytes     
   
   belongs_to :gallery
   
@@ -27,6 +27,9 @@ class GalleryItem < ActiveRecord::Base
   belongs_to :parent, :class_name => 'GalleryItem', :foreign_key => 'parent_id'
   
   has_many :infos, :class_name => "GalleryItemInfo", :dependent => :delete_all
+  
+  has_and_belongs_to_many :gallery_keywords, :join_table => "gallery_items_keywords", :foreign_key => "gallery_item_id", :uniq => true,
+                            :class_name => "GalleryKeyword", :association_foreign_key => "keyword_id"
 
   before_create :set_filename_as_name
   before_create :set_position
@@ -37,7 +40,7 @@ class GalleryItem < ActiveRecord::Base
   after_attachment_saved do |item|
     item.generate_default_thumbnails if item.parent.nil?
   end       
-  
+
   before_thumbnail_saved do |thumbnail|
     thumbnail.gallery_id = thumbnail.parent.gallery_id
   end                                                
@@ -65,6 +68,28 @@ class GalleryItem < ActiveRecord::Base
       thumbnail
     else
       self
+    end
+  end
+  
+  def keywords                         
+    str = ''                 
+    if self.gallery_keywords.length > 0 
+      self.gallery_keywords.uniq.each do |key|
+        str += key.keyword
+        str += ','
+      end                         
+      str = str.slice(0..-2)                        
+    else                
+      str += self.gallery.keywords          
+    end                           
+    return str
+  end           
+  
+  def keywords=(keywords) 
+    self.gallery_keywords = []
+    keys = keywords.split(',')
+    keys.each do |word|
+      self.gallery_keywords << GalleryKeyword.find_or_create_by_keyword(word.strip)
     end
   end
   

@@ -25,7 +25,8 @@ module GalleryPageExtensions
   desc %{    
     Usage:
     <pre><code><r:gallery:link /></code></pre>
-    Provides link for current gallery }
+    Provides link for current gallery options are rendered 
+    inline as key:value pairs i.e. class='value' id='value', etc.}
   tag "gallery:link" do |tag|
     gallery = find_gallery(tag)
     options = tag.attr.dup
@@ -46,6 +47,34 @@ module GalleryPageExtensions
     File.join(tag.render('url'), gallery.url(self.base_gallery_id))
   end    
   
+  desc %{
+    Usage:
+    <pre><code><r:gallery:if_current_keywords>....</r:gallery:if_current_keywords></code></pre>
+    Check to see if keywords are available in the parameters of the request URI
+  }
+  tag 'gallery:if_current_keywords' do |tag|    
+    tag.expand if tag.globals.page.request.parameters['keywords']
+  end  
+  
+  desc %{
+    Usage:
+    <pre><code><r:gallery:unless_current_keywords>....</r:gallery:unless_current_keywords></code></pre>
+    Check to for no keywords being available in the parameters of the request URI
+  }
+  tag 'gallery:unless_current_keywords' do |tag|    
+    tag.expand unless tag.globals.page.request.parameters['keywords']
+  end
+  
+  desc %{
+    Usage:
+    <pre><code><r:gallery:current_keywords [separator=',']/></code></pre>
+    Outputs the current keywords in the parameters of the request URI
+  }
+  tag "gallery:current_keywords" do |tag|          
+    joiner = tag.attr['separator'] ? tag.attr['separator'] : ','
+    tag.globals.page.request.parameters['keywords'].gsub(/\,/, joiner)
+  end
+  
   def current_gallery
     @current_gallery
   end
@@ -56,7 +85,7 @@ module GalleryPageExtensions
       path, item, action = $1, nil, nil
       if path =~ /^(.*)\/(\d+\.\w+)\/(show|download)\/?$/
         path, item, action = $1, $2, $3
-      end            
+      end                                
       @current_gallery = find_gallery_by_path(path)      
       if @current_gallery
         if !item.nil? && !action.nil?

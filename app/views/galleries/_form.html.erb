@@ -15,10 +15,14 @@
   </p>
 	<div>
 		<%= f.text_area "description", :class => 'textbox', :maxlength => 255 %>
+	</div>                                                                
+	<div>     
+		<label for="gallery_keywords"> Keywords for gallery. </label> 
+		<%= f.text_field "keywords", :class => 'textbox', :maxlength => 255 %>
 	</div>
   <p id="advanced_options" style="display: none;">
 		<%= f.check_box :hidden, {:id => 'hide_gallery'} %>
-		<label for="hide_gallery"> Hide this gallery in galleries list. </label>
+		<label for="hide_gallery"> Hide this gallery in galleries list. </label> 
 	</p>
 	<p>
 		<small id="close_advanced_options" style="display: none;"><a href="#" onclick="toggle_advanced(); return false;">Close advanced options</a></small>

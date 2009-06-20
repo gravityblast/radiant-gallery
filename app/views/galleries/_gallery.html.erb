@@ -19,10 +19,13 @@ spinner = image('spinner.gif', :class => 'busy', :id => "gallery-busy-#{gallery.
 			<a title="<%= gallery.name %>" href="<%= admin_gallery_path(gallery) %>">
 				<%= icon %>
 				<span class="name"><%= gallery.name %></span>
-			</a> 
+			</a>                                           
 			<small class="info">(<%= gallery.items.size %> files)</small>
 			<%= spinner %>
 		</span>
+	</td>
+	<td class='keywords'>                                                                                                               
+		<span style='color:#666; font-size:0.75em;padding-left:0.5em;'><%= gallery.keywords if gallery.items.size > 0 && gallery.gallery_keywords.length > 0 %></span>
 	</td>	
 	<td class="status"><%= gallery.id %></td>
 	<td class="status published-status"><%= gallery.hidden ? 'hidden' : 'visible' %></td>

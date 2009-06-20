@@ -18,7 +18,9 @@ class Gallery < ActiveRecord::Base
     
   belongs_to :created_by, :class_name => 'User', :foreign_key => 'created_by'
   belongs_to :update_by, :class_name => 'User', :foreign_key => 'update_by'
-      
+  has_and_belongs_to_many :gallery_keywords, :join_table => "galleries_keywords", :foreign_key => "gallery_id", :uniq => true,
+                            :class_name => "GalleryKeyword", :association_foreign_key => "keyword_id"
+                               
   attr_protected :slug, :path    
   
   validates_presence_of :name
@@ -47,6 +49,23 @@ class Gallery < ActiveRecord::Base
   
   def absolute_thumbs_path
     File.join(self.absolute_path, 'thumbs')
+  end
+  
+  def keywords
+    str =''     
+    self.gallery_keywords.each do |key|
+      str += key.keyword
+      str += ','
+    end                                   
+    str.slice(0..-2)
+  end               
+  
+  def keywords=(keywords) 
+    self.gallery_keywords = []
+    keys = keywords.split(',')
+    keys.each do |word|
+      self.gallery_keywords << GalleryKeyword.find_or_create_by_keyword(word.strip)
+    end
   end
   
   def url(root_id = nil)

@@ -11,12 +11,10 @@ module GalleryItemTags
   
   desc %{    
     Usage:
-    <pre><code><r:gallery:items:each [order='order' by='by' limit='limit' offset='offset'
-scope='all|gallery']>
-...
-</r:gallery:items:each></code></pre>
-    Iterates over all items in current gallery.
-    Valid scopes are 'all' (find all Gallery Items) and 'gallery' (find Items that belong to the current Gallery) }
+    <pre><code><r:gallery:items:each [order='order' by='by' limit='limit' offset='offset' scope='all|gallery'
+    keywords='key1,key2,key3' current_keywords='is|is_not']></r:gallery:items:each></code></pre>
+    Valid scopes are 'all' (find all Gallery Items) and 'gallery' (find Items that belong to the current Gallery)
+    Iterates through gallery items keywords=(manual entered keywords) and/or current_keywords=(is|is_not) } 
   tag "gallery:items:each" do |tag|
     content = ""
     gallery = find_gallery(tag)
@@ -38,6 +36,18 @@ scope='all|gallery']>
     options[:offset] = tag.attr['offset'] ? tag.attr['offset'].to_i  : 0
     options[:conditions] = {:parent_id => nil}
     
+    if !tag.attr['keywords'].nil? || !tag.attr['current_keywords'].nil?                                                                                                                                  
+      keywords = !tag.attr['keywords'].nil? ? tag.attr['keywords'].split(',') : []
+      if (tag.attr['current_keywords'] == 'is' || tag.attr['current_keywords'] == 'is_not') && !tag.globals.page.request.parameters['keywords'].nil?
+        @current_keywords = tag.globals.page.request.parameters['keywords'].split(',') if !tag.globals.page.request.parameters['keywords'].nil?
+        if !@current_keywords.nil? && @current_keywords.length > 0
+          keywords.concat(@current_keywords)
+        end
+      end
+      options[:joins] = :gallery_keywords
+      options[:conditions].merge!({"gallery_keywords.keyword" => keywords}) if keywords.length > 0              
+    end
+    
     @page_number = tag.globals.page.request.params["page"] && tag.globals.page.request.params["page"].first.to_i > 1 ? tag.globals.page.request.params["page"].first.to_i : 1
     if !tag.attr['limit'].nil? && tag.attr['offset'].nil?
       options[:offset] = tag.attr['limit'].to_i * (@page_number - 1)      
@@ -45,7 +55,7 @@ scope='all|gallery']>
     end
                   
     scope = tag.attr['scope'] ? tag.attr['scope'] : 'gallery'
-    raise GalleryTagError.new('Invalid value for attribute scope. Valid values are: gallery, all') unless %[gallery all].include?(scope)
+    raise GalleryTagError.new('Invalid value for attribute scope. Valid values are: gallery, all') unless %[gallery all].include?(scope)  
     items = case scope
       when 'gallery'
         gallery ? gallery.items.find(:all, options) : []
@@ -86,12 +96,34 @@ scope='all|gallery']>
 
   desc %{
     Usage:
-    <pre><code><r:gallery:item:name /></code></pre>
-    Provides name for current gallery item }
+    <pre><code><r:gallery:item:name [safe='true']/></code></pre>
+    Provides name for current gallery item, safe is to make safe for web }
   tag "gallery:item:name" do |tag|      
-    item = find_item(tag)
-    item.name
-  end  
+    item = find_item(tag)  
+    if tag.attr['safe'] == 'true'                        
+      @safe = item.name.gsub(/[\s]+/, '_').downcase
+    else 
+      @normal = item.name
+    end
+    name = tag.attr['safe'] ? @safe : @normal
+  end 
+  
+  desc %{
+    Usage:
+    <pre><code><r:gallery:item:keywords [separator=',' safe='true']/></code></pre>
+    Provides keywords for current gallery item, use 
+    separator="separator_string" to specify the character between keywords}
+  tag "gallery:item:keywords" do |tag|      
+    item = find_item(tag)    
+    joiner = tag.attr['separator'] ? tag.attr['separator'] : ' '  
+    if tag.attr['safe'] == 'true'   
+      @safe = item.keywords.gsub(/[\s]+/, '_').downcase
+    else 
+      @normal = item.keywords
+    end
+    keys = tag.attr['safe'] ? @safe : @normal
+    keys.gsub(/\,/, joiner);
+  end 
   
   desc %{
     Usage:
@@ -131,7 +163,7 @@ scope='all|gallery']>
   
   desc %{
     Usage:
-    <pre><code><r:gallery:item:page_url /></code></pre>
+    <pre><code><r:gallery:item:page_url/></code></pre>
     Provides page url for current gallery item }
   tag "gallery:item:page_url" do |tag|
     item = find_item(tag)

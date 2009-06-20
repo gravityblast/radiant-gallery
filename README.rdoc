@@ -124,10 +124,12 @@ If you want to generate that thumbnail just after the upload of the image, add t
     admin_thumb: 300x300   # do not remove
     admin_preview: 500x500 # do not remove
     small: 200x100 # this is the signature you use in the page.
+    square: c90x90 # specific sized images with a center crop
                 
 == Contributors
 
 * Version: 0.3.0  - Adam Salter - http://10outta10.com
+* Version: 0.7.*  - Tom Cowell - http://eightsquarestudio.com 
 
 == Credits
 

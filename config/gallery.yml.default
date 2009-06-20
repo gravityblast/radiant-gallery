@@ -1,6 +1,6 @@
 path_prefix: public/galleries
 processor: rmagick  
-# max_size: 3.megabytes
+max_size: 3000 #file max size in kilobytes
 gallery_based: no
 default_thumbnails:
   admin_thumb: 300x300   # do not remove

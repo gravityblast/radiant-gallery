@@ -2,6 +2,8 @@ require 'action_controller/test_process.rb'
 
 class GalleryImportingsController < ApplicationController
   
+  protect_from_forgery :except => [ :import ]
+  
   helper 'galleries'
   layout 'gallery_popup'  
   

@@ -1,3 +1,4 @@
 page["item_#{@item.id}"].down('.label a').update(item_label_text(@item))
-page["item_#{@item.id}"].down('.description').update(@item.description)
+page["item_#{@item.id}"].down('.description').update(@item.description)    
+page["item_#{@item.id}"].down('.keywords').update(@item.keywords) 
 page.call 'Gallery.EditForm.close'
