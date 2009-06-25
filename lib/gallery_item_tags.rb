@@ -99,13 +99,8 @@ module GalleryItemTags
     <pre><code><r:gallery:item:name [safe='true']/></code></pre>
     Provides name for current gallery item, safe is to make safe for web }
   tag "gallery:item:name" do |tag|      
-    item = find_item(tag)  
-    if tag.attr['safe'] == 'true'                        
-      @safe = item.name.gsub(/[\s]+/, '_').downcase
-    else 
-      @normal = item.name
-    end
-    name = tag.attr['safe'] ? @safe : @normal
+    item = find_item(tag)
+    name = tag.attr['safe'] ? item.name.downcase.gsub(/[\s~\.:;+=]+/, '_') : item.name
   end 
   
   desc %{
@@ -116,12 +111,7 @@ module GalleryItemTags
   tag "gallery:item:keywords" do |tag|      
     item = find_item(tag)    
     joiner = tag.attr['separator'] ? tag.attr['separator'] : ' '  
-    if tag.attr['safe'] == 'true'   
-      @safe = item.keywords.gsub(/[\s]+/, '_').downcase
-    else 
-      @normal = item.keywords
-    end
-    keys = tag.attr['safe'] ? @safe : @normal
+    keys = tag.attr['safe'] ? item.keywords.downcase.gsub(/[\s~\.:;+=]+/, '_') : item.keywords
     keys.gsub(/\,/, joiner);
   end 
   

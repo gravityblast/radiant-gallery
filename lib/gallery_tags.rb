@@ -96,12 +96,7 @@ module GalleryTags
     Provides name for current gallery, safe is to make safe for web }
   tag "gallery:name" do |tag|
     gallery = tag.locals.gallery
-    if tag.attr['safe'] == 'true'  
-      @safe = gallery.name.gsub(/[\s]+/, '_').downcase
-    else 
-      @normal = gallery.name
-    end
-    name = tag.attr['safe'] ? @safe : @normal
+    name = tag.attr['safe'] ? gallery.name.gsub(/[\s~\.:;+=]+/, '_').downcase : gallery.name
   end
   
   desc %{                 
@@ -112,12 +107,7 @@ module GalleryTags
   tag "gallery:keywords" do |tag|
     gallery = tag.locals.gallery    
     joiner = tag.attr['separator'] ? tag.attr['separator'] : ' ' 
-    if tag.attr['safe'] == 'true'  
-      @safe = gallery.keywords.gsub(/[\s]+/, '_').downcase
-    else 
-      @normal = gallery.keywords
-    end
-    keys = tag.attr['safe'] ? @safe : @normal
+    keys = tag.attr['safe'] ? gallery.keywords.gsub(/[\s~\.:;+=]+/, '_').downcase : gallery.keywords
     keys.gsub(/\,/, joiner);
     tag.expand
   end                            
@@ -142,13 +132,7 @@ module GalleryTags
     Get the keyword of the current gallery:keywords loop } 
   tag 'gallery:keywords:keyword' do |tag|
     gallery_keyword = tag.locals.uniq_keywords
-    if tag.attr['safe'] == 'true'  
-      @safe = gallery_keyword.keywords.gsub(/[\s]+/, '_').downcase
-    else 
-      @normal = gallery_keyword.keywords
-    end
-    keys = tag.attr['safe'] ? @safe : @normal
-    keys
+    keys = tag.attr['safe'] ? gallery_keyword.keyword.gsub(/[\s~\.:;+=]+/, '_').downcase : gallery_keyword.keyword
   end
        
   desc %{
@@ -163,7 +147,7 @@ module GalleryTags
     attributes = " #{attributes}" unless attributes.empty?
     text = tag.double? ? tag.expand : tag.render('name')  
     gallery_url = File.join(tag.render('url'))
-    %{<a href="#{gallery_url[0..-2]}?keywords=#{keyword.gsub(/[\s]+/, '_')}"#{attributes}>#{keyword}</a>}
+    %{<a href="#{gallery_url[0..-2]}?keywords=#{keyword.gsub(/[\s~\.:;+=]+/, '_')}"#{attributes}>#{keyword}</a>}
   end
   
   tag 'gallery:breadcrumbs' do |tag|
