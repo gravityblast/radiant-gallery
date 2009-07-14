@@ -98,6 +98,16 @@ module GalleryTags
     gallery = tag.locals.gallery
     name = tag.attr['safe'] ? gallery.name.gsub(/[\s~\.:;+=]+/, '_').downcase : gallery.name
   end
+
+  desc %{
+    Usage:
+    <pre><code><r:gallery:slug/></code></pre>
+    Provides slug for current gallery. Use this to append on the url of your gallery root page (e.g. in sidebar or sitemap }
+  tag "gallery:slug" do |tag|
+    gallery = tag.locals.gallery
+    gallery.slug
+  end
+
   
   desc %{                 
     Usage:
@@ -296,7 +306,7 @@ module GalleryTags
   end
   
 
-protected
+  protected
   
   def find_gallery(tag)  
     if tag.locals.gallery
