@@ -12,7 +12,7 @@ class GalleryItem < ActiveRecord::Base
     end
   end
   
-  attr_accessible :name, :description, :uploaded_data
+  attr_accessible :name, :description, :uploaded_data, :keywords
   
   has_attachment :storage => :file_system,
     :path_prefix => Radiant::Config["gallery.path_prefix"],
