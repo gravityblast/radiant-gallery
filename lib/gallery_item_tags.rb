@@ -31,10 +31,10 @@ module GalleryItemTags
       raise GalleryTagError.new("`by' attribute of `each' tag must be set to a valid field name")
     end
     order = (%w[ASC DESC].include?(tag.attr['order'].to_s.upcase)) ? tag.attr['order'] : "ASC"
-    options[:order] = "#{by} #{order}"
+    options[:order] = "#{GalleryItem.table_name}.#{by} #{order} "    
     options[:limit] = tag.attr['limit'] ? tag.attr['limit'].to_i  : 9999
     options[:offset] = tag.attr['offset'] ? tag.attr['offset'].to_i  : 0
-    options[:conditions] = {:parent_id => nil}
+    options[:conditions] = { "#{GalleryItem.table_name}.parent_id" => nil}  
     
     if !tag.attr['keywords'].nil? || !tag.attr['current_keywords'].nil?                                                                                                                                  
       keywords = !tag.attr['keywords'].nil? ? tag.attr['keywords'].split(',') : []
