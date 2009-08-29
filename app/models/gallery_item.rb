@@ -14,7 +14,7 @@ class GalleryItem < ActiveRecord::Base
   
   attr_accessible :name, :description, :uploaded_data, :keywords
   
-  has_attachment :storage => :file_system,
+  has_attachment :storage => Radiant::Config["gallery.storage"].to_sym,
     :path_prefix => Radiant::Config["gallery.path_prefix"],
     :processor => Radiant::Config["gallery.processor"],
     :max_size => Radiant::Config["gallery.max_size"].to_i.kilobytes     
@@ -29,7 +29,7 @@ class GalleryItem < ActiveRecord::Base
   has_many :infos, :class_name => "GalleryItemInfo", :dependent => :delete_all
   
   has_and_belongs_to_many :gallery_keywords, :join_table => "gallery_items_keywords", :foreign_key => "gallery_item_id", :uniq => true,
-                            :class_name => "GalleryKeyword", :association_foreign_key => "keyword_id"
+    :class_name => "GalleryKeyword", :association_foreign_key => "keyword_id"
 
   before_create :set_filename_as_name
   before_create :set_position
@@ -104,7 +104,11 @@ class GalleryItem < ActiveRecord::Base
   def full_filename(thumbnail = nil)
     file_system_path = (thumbnail ? thumbnail_class : self).attachment_options[:path_prefix].to_s
     gallery_folder = self.gallery ? self.gallery.id.to_s : self.parent.gallery.id.to_s
-    File.join(RAILS_ROOT, file_system_path, gallery_folder, *partitioned_path(thumbnail_name_for(thumbnail)))
+    if Radiant::Config["gallery.storage"].eql?("s3")
+      File.join(file_system_path,gallery_folder, thumbnail_name_for(thumbnail))
+    else
+      File.join(RAILS_ROOT, file_system_path, gallery_folder, *partitioned_path(thumbnail_name_for(thumbnail)))
+    end
   end
   
   def last?
@@ -114,15 +118,15 @@ class GalleryItem < ActiveRecord::Base
   def generate_default_thumbnails      
     if self.thumbnailable? and default_thumbnails = Radiant::Config['gallery.default_thumbnails']
       default_thumbnails.split(',').each do |default_thumbnail|
-         if default_thumbnail =~ /^(\w+)=([a-z])?(\d+)?x(\d+)?([%!<>@]?)$/
-           prefix, pre_char, width, height, post_char = $1, $2, $3, $4, $5
-           self.thumb(:width => width, :height => height, :prefix => prefix, :special => [pre_char, post_char])
+        if default_thumbnail =~ /^(\w+)=([a-z])?(\d+)?x(\d+)?([%!<>@]?)$/
+          prefix, pre_char, width, height, post_char = $1, $2, $3, $4, $5
+          self.thumb(:width => width, :height => height, :prefix => prefix, :special => [pre_char, post_char])
         end
       end
     end
   end  
   
-protected    
+  protected
 
   def set_filename_as_name
     unless parent
